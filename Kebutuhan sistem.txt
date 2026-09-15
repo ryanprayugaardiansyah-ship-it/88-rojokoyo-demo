@@ -1,0 +1,27 @@
+Kebutuhan sistem
+Web admin berupa POS/kasir khusus usaha percetakan untuk mengelola transaksi dan pesanan seperti banner, sablon, undangan, stiker, serta layanan cetak lainnya.
+
+Fitur utama:
+- Login dengan peran pengguna: admin dan kasir.
+- Kelola produk/jasa cetak beserta kategori, harga, bahan, ukuran, dan jenis perhitungan harga.
+- POS/kasir untuk membuat transaksi dan memilih pelanggan.
+- Pelanggan umum memakai harga normal.
+- Member memperoleh diskon khusus secara otomatis.
+- Member dengan pembelian jumlah 50 atau lebih memperoleh diskon tambahan/bertingkat sesuai aturan yang ditentukan.
+- Mendukung harga satuan, berdasarkan jumlah, berdasarkan luas (misalnya banner per m²), dan harga kustom.
+- Pesanan dapat mencatat detail: ukuran, bahan, finishing, catatan, file desain, dan estimasi selesai.
+- Pembayaran penuh atau DP; sisa pembayaran dapat dilunasi kemudian.
+- Status pesanan: desain/proses → produksi → selesai → diambil atau dikirim.
+- Cetak struk transaksi ke printer thermal setelah pembayaran berhasil.
+- Riwayat transaksi pelanggan dan laporan penjualan dasar: harian, bulanan, per produk, diskon, dan pembayaran/DP.
+- Penyimpanan data pelanggan/member, termasuk nomor WhatsApp dan riwayat transaksi.
+
+Stack yang digunakan
+- Backend dan web admin: Laravel
+- Antarmuka interaktif: Blade + Livewire
+- Styling: Tailwind CSS
+- Database: MySQL
+- Autentikasi dan otorisasi: Laravel Auth dengan role Admin dan Kasir
+- Penyimpanan file desain: Laravel Storage, dimulai dari penyimpanan lokal/server
+- Cetak struk thermal: browser print pada tahap awal; dapat ditingkatkan dengan QZ Tray untuk cetak langsung ke printer thermal
+- Server/deployment: VPS Linux, Nginx, PHP, dan MySQL

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#e4572e" />
+    <title>Masuk | 88 Rojokoyo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="login-page">
+      <section class="brand-panel" aria-label="Tentang 88 Rojokoyo">
+        <div class="brand-panel__content">
+          <a class="brand" href="login.html" aria-label="88 Rojokoyo">
+            <span class="brand__mark" aria-hidden="true">88</span>
+            <span class="brand__name">ROJOKOYO<small>PRINTING</small></span>
+          </a>
+
+          <div class="brand-panel__copy">
+            <p class="eyebrow">ADMIN PERCETAKAN</p>
+            <h1>Semua pesanan, dalam satu tempat.</h1>
+            <p>
+              Kelola transaksi, pelanggan, dan proses produksi 88 Rojokoyo dengan lebih mudah.
+            </p>
+          </div>
+
+          <div class="service-list" aria-label="Layanan percetakan">
+            <span>Banner</span><span>Undangan</span><span>Sablon</span><span>Stiker</span>
+          </div>
+        </div>
+        <div class="shape shape--one" aria-hidden="true"></div>
+        <div class="shape shape--two" aria-hidden="true"></div>
+        <div class="print-card" aria-hidden="true">
+          <div class="print-card__top"><i></i><i></i><i></i></div>
+          <div class="print-card__body">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-panel">
+        <div class="form-panel__inner">
+          <a class="brand brand--mobile" href="login.html" aria-label="88 Rojokoyo">
+            <span class="brand__mark" aria-hidden="true">88</span>
+            <span class="brand__name">ROJOKOYO<small>PRINTING</small></span>
+          </a>
+
+          <header class="form-header">
+            <p class="eyebrow">SELAMAT DATANG</p>
+            <h2>Masuk ke akun Anda</h2>
+            <p>Masukkan informasi akun untuk melanjutkan.</p>
+          </header>
+
+          <form id="loginForm" class="login-form" novalidate>
+            <div class="field-group">
+              <label for="email">Email atau username</label>
+              <div class="input-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v13H4zM4 7l8 5 8-5" /></svg>
+                <input id="email" name="email" type="text" placeholder="Masukkan email atau username" autocomplete="username" required />
+              </div>
+              <p class="field-error" id="emailError"></p>
+            </div>
+
+            <div class="field-group">
+              <div class="label-row">
+                <label for="password">Kata sandi</label>
+                <a href="#" class="forgot-link" id="forgotPassword">Lupa kata sandi?</a>
+              </div>
+              <div class="input-wrap">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                <input id="password" name="password" type="password" placeholder="Masukkan kata sandi" autocomplete="current-password" required />
+                <button class="toggle-password" type="button" aria-label="Tampilkan kata sandi" aria-pressed="false">
+                  <svg class="eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /></svg>
+                  <svg class="eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 6.2A10.6 10.6 0 0 1 12 6c6 0 9.5 6 9.5 6a17.8 17.8 0 0 1-3.1 3.7M6.1 6.1A17.5 17.5 0 0 0 2.5 12s3.5 6 9.5 6a10.6 10.6 0 0 0 2.1-.2M9.8 9.8a3.1 3.1 0 0 0 4.4 4.4" /></svg>
+                </button>
+              </div>
+              <p class="field-error" id="passwordError"></p>
+            </div>
+
+            <label class="remember-me">
+              <input type="checkbox" name="remember" />
+              <span class="checkbox" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m3.2 8 3 3 6.5-6" /></svg></span>
+              <span>Ingat saya di perangkat ini</span>
+            </label>
+
+            <button class="submit-button" type="submit">
+              <span>Masuk ke Dashboard</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </button>
+          </form>
+
+          <aside class="demo-account" aria-label="Akun demo">
+            <div class="demo-account__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM12 7v5l3.2 2" /></svg>
+            </div>
+            <div>
+              <strong>Coba akun demo Admin</strong>
+              <span>admin@88rojokoyo.com &middot; Admin88!</span>
+            </div>
+            <button class="demo-fill-button" id="fillDemo" type="button">Isi otomatis</button>
+          </aside>
+
+          <p class="help-text">Butuh bantuan? <a href="mailto:admin@88rojokoyo.com">Hubungi administrator</a></p>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4.2 4.2L19 6.5" /></svg>
+      <span id="toastMessage"></span>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
