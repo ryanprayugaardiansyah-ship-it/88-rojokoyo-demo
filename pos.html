@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173e32" />
+    <title>Kasir / POS | 88 Rojokoyo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="dashboard-sidebar" id="sidebar">
+        <a class="brand" href="dashboard.html" aria-label="88 Rojokoyo"><span class="brand__mark">88</span><span class="brand__name">ROJOKOYO<small>PRINTING</small></span></a>
+        <nav class="sidebar-menu" aria-label="Navigasi utama">
+          <p class="sidebar-menu__label">MENU UTAMA</p>
+          <a href="dashboard.html"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1"/><rect x="14" y="14" width="6.5" height="6.5" rx="1"/></svg>Dashboard</a>
+          <a class="is-active" href="pos.html"><svg viewBox="0 0 24 24"><path d="M4 6h16l-1 14H5L4 6Z"/><path d="M2 6h20M9 10v6M15 10v6"/></svg>Kasir / POS</a>
+          <a href="pesanan.html"><svg viewBox="0 0 24 24"><path d="M6 3.5h12v17H6zM9 8h6M9 12h6M9 16h3"/></svg>Pesanan Produksi <span class="menu-badge">8</span></a>
+          <a href="pelanggan.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.5 3.2-5.5 7.5-5.5s6.7 2 7.5 5.5"/></svg>Pelanggan &amp; Member</a>
+          <p class="sidebar-menu__label sidebar-menu__label--spaced">PENGELOLAAN</p>
+          <a href="produk.html"><svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="m4 12 8 4 8-4M4 17l8 4 8-4"/></svg>Produk &amp; Layanan</a>
+          <a href="laporan.html"><svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-4M12 16V7M16 16v-7"/></svg>Laporan Penjualan</a>
+          <a href="pengaturan.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 13.4v-2.8l-2-.6a7.6 7.6 0 0 0-.7-1.6l1-1.8-2-2-1.8 1.1a7.6 7.6 0 0 0-1.6-.7L11.4 3H8.6L8 5a7.6 7.6 0 0 0-1.6.7L4.6 4.6l-2 2 1.1 1.8A7.6 7.6 0 0 0 3 10l-2 .6v2.8l2 .6c.2.6.4 1.1.7 1.6l-1.1 1.8 2 2 1.8-1.1c.5.3 1 .5 1.6.7l.6 2h2.8l.6-2c.6-.2 1.1-.4 1.6-.7l1.8 1.1 2-2-1.1-1.8c.3-.5.5-1 .7-1.6l2-.6Z"/></svg>Pengaturan</a>
+        </nav>
+        <div class="sidebar-bottom"><div class="sidebar-user"><span class="user-avatar">AR</span><span><strong>Admin Rojokoyo</strong><span>Administrator</span></span></div></div>
+      </aside>
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      <main class="dashboard-main">
+        <header class="dashboard-header"><button class="menu-button" id="sidebarToggle" type="button" aria-label="Buka menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="dashboard-header__right"><span class="header-date">Transaksi baru · 16 Sep 2026</span><button class="notification-button" type="button" aria-label="Notifikasi"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button><span class="header-avatar">AR</span></div></header>
+        <div class="dashboard-content pos-content">
+          <section class="pos-title"><h1>Kasir / POS</h1><p>Tambahkan layanan cetak dan selesaikan transaksi pelanggan.</p></section>
+          <div class="pos-layout">
+            <section class="pos-products" aria-label="Produk dan layanan">
+              <div class="pos-toolbar"><label class="product-search"><svg viewBox="0 0 24 24"><circle cx="10.7" cy="10.7" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="productSearch" type="search" placeholder="Cari produk atau layanan..." /></label><div class="category-filters" id="categoryFilters"><button class="is-active" data-category="all">Semua</button><button data-category="cetak">Cetak</button><button data-category="digital">Digital Print</button><button data-category="sablon">Sablon</button></div></div>
+              <div class="product-grid" id="productGrid">
+                <button class="product-card" data-id="banner" data-category="cetak"><span class="product-card__icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h5"/></svg></span><strong>Banner Flexi</strong><span>Mulai Rp150.000 / m²</span><i class="product-card__add">+</i></button>
+                <button class="product-card" data-id="undangan" data-category="cetak"><span class="product-card__icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="1"/><path d="m5 7 7 5 7-5"/></svg></span><strong>Undangan Custom</strong><span>Rp2.500 / lembar</span><i class="product-card__add">+</i></button>
+                <button class="product-card" data-id="stiker" data-category="digital"><span class="product-card__icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h5M8 16h7"/></svg></span><strong>Stiker Vinyl</strong><span>Rp8.000 / lembar</span><i class="product-card__add">+</i></button>
+                <button class="product-card" data-id="sablon" data-category="sablon"><span class="product-card__icon"><svg viewBox="0 0 24 24"><path d="M8 4h8l2 6-3 2v8H9v-8l-3-2 2-6ZM9 4v4h6V4"/></svg></span><strong>Sablon Kaos</strong><span>Rp35.000 / pcs</span><i class="product-card__add">+</i></button>
+                <button class="product-card" data-id="kartu" data-category="cetak"><span class="product-card__icon"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h4M7 14h7"/></svg></span><strong>Kartu Nama</strong><span>Rp50.000 / 100 pcs</span><i class="product-card__add">+</i></button>
+                <button class="product-card" data-id="fotokopi" data-category="digital"><span class="product-card__icon"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="11" height="14" rx="1"/><path d="M5"/><path d="M5 7v14h11"/></svg></span><strong>Fotokopi Warna</strong><span>Rp1.500 / lembar</span><i class="product-card__add">+</i></button>
+              </div>
+            </section>
+            <aside class="pos-summary"><section class="cart-panel"><header class="cart-panel__heading"><h2>Detail Transaksi</h2><span class="cart-count" id="cartCount">2</span></header><div class="customer-selector" id="customerSelector"><button class="customer-option" type="button" data-customer="regular"><span class="customer-option__avatar">U</span><span><strong>Pelanggan Umum</strong><small>Harga normal</small></span></button><button class="customer-option is-selected" type="button" data-customer="member"><span class="customer-option__avatar">NA</span><span><strong>Nabila A. <em>Member</em></strong><small>Diskon hingga 15%</small></span></button></div><div class="cart-items" id="cartItems"></div><div class="cart-summary"><div class="discount-note is-visible" id="discountNote"><svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5"/><circle cx="12" cy="12" r="9"/></svg><span>Diskon member 15% aktif untuk pesanan 50+ item.</span></div><div class="total-row"><span>Subtotal</span><b id="subtotal">Rp 275.000</b></div><div class="total-row"><span>Diskon <span id="discountLabel">Member 15%</span></span><b id="discount">- Rp 41.250</b></div><div class="total-row total-row--main"><span>Total</span><b id="total">Rp 233.750</b></div><span class="payment-label">Metode pembayaran</span><div class="payment-options" id="paymentOptions"><button class="is-selected" type="button" data-payment="Tunai">Tunai</button><button type="button" data-payment="QRIS">QRIS</button><button type="button" data-payment="Transfer">Transfer</button></div><button class="checkout-button" id="checkoutButton" type="button"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Bayar &amp; Cetak Struk</button></div></section></aside>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div class="receipt-modal" id="receiptModal" role="dialog" aria-modal="true" aria-label="Transaksi berhasil"><div class="receipt-dialog"><section class="receipt-success"><span class="receipt-success__icon"><svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5"/></svg></span><h2>Transaksi berhasil</h2><p>Pesanan telah tersimpan dan siap diproses.</p></section><section class="receipt-paper"><div class="receipt-brand">88 ROJOKOYO<small>PRINTING &amp; ADVERTISING</small></div><p class="receipt-number">#TRX-2026-0916-024 · 16 Sep 2026, 10.30</p><div class="receipt-lines"><div class="receipt-line"><span>Pelanggan</span><b id="receiptCustomer">Nabila A. (Member)</b></div><div class="receipt-line"><span>Total item</span><b id="receiptItems">51 item</b></div><div class="receipt-line"><span>Pembayaran</span><b id="receiptPayment">Tunai</b></div><div class="receipt-line"><span>Diskon</span><b id="receiptDiscount">- Rp 41.250</b></div></div><div class="receipt-total"><span>TOTAL</span><b id="receiptTotal">Rp 233.750</b></div><div class="receipt-actions"><button id="closeReceipt" type="button">Tutup</button><button id="printReceipt" type="button">Cetak Struk</button></div></section></div></div>
+    <script src="script.js"></script>
+  </body>
+</html>
