@@ -93,6 +93,19 @@ const productCatalog = {
   fotokopi: { name: 'Fotokopi Warna', price: 1500 },
 };
 
+const memberDiscountRules = [
+  { code: 'member', name: 'Diskon Member', defaultPercent: 10 },
+  { code: 'bulk_50', name: 'Diskon Pembelian 50+', defaultPercent: 15 },
+];
+
+function normalizeMemberDiscounts(discounts = []) {
+  return discounts.map((discount) => {
+    if (discount.code) return { code: discount.code, percent: Number(discount.percent) || 0 };
+    const isBulkDiscount = /50|item|jumlah|kuantitas/i.test(discount.name || '');
+    return { code: isBulkDiscount ? 'bulk_50' : 'member', percent: Number(discount.percent) || 0 };
+  }).filter((discount, index, values) => memberDiscountRules.some((rule) => rule.code === discount.code) && values.findIndex((item) => item.code === discount.code) === index);
+}
+
 const posElements = {
   items: document.querySelector('#cartItems'),
   count: document.querySelector('#cartCount'),
@@ -116,6 +129,17 @@ if (posElements.items) {
     { name: 'Dewi Lestari', number: 'MBR-0009' },
     { name: 'Rizky Maulana', number: 'MBR-0010' },
   ];
+  try {
+    const storedMembers = (JSON.parse(localStorage.getItem('rojokoyo-customers')) || []).map(({ isDeleted, ...customer }) => customer);
+    storedMembers.filter((customer) => customer.type === 'member').forEach((customer) => {
+      const index = members.findIndex((member) => member.number === customer.code || member.name.toLowerCase() === customer.name.toLowerCase());
+      const member = { name: customer.name, number: customer.code, discounts: customer.discounts || [] };
+      if (index >= 0) members[index] = member;
+      else members.push(member);
+    });
+  } catch {
+    // Data demo tetap dapat digunakan bila penyimpanan browser tidak tersedia.
+  }
   const cart = [
     { id: 'banner', quantity: 1 },
     { id: 'undangan', quantity: 50 },
@@ -123,6 +147,7 @@ if (posElements.items) {
   let customerType = 'member';
   let paymentMethod = 'Tunai';
   let selectedMember = members[0];
+  let latestTransaction = null;
   const regularCustomerFields = document.querySelector('#regularCustomerFields');
   const regularCustomerName = document.querySelector('#regularCustomerName');
   const regularCustomerNote = document.querySelector('#regularCustomerNote');
@@ -132,16 +157,30 @@ if (posElements.items) {
     return name.split(' ').slice(0, 2).map((part) => part[0]).join('').toUpperCase();
   }
 
+  function getMemberDiscount() {
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const configuredDiscounts = normalizeMemberDiscounts(selectedMember.discounts?.length ? selectedMember.discounts : memberDiscountRules.map((rule) => ({ code: rule.code, percent: rule.defaultPercent })));
+    const standardDiscount = configuredDiscounts.find((discount) => discount.code === 'member');
+    const bulkDiscount = configuredDiscounts.find((discount) => discount.code === 'bulk_50');
+    const activeDiscount = totalItems >= 50 && bulkDiscount ? bulkDiscount : standardDiscount;
+    const rule = memberDiscountRules.find((item) => item.code === activeDiscount?.code);
+
+    return activeDiscount && rule
+      ? { rate: activeDiscount.percent / 100, label: rule.name, note: `${rule.name} ${activeDiscount.percent}% aktif untuk transaksi ini.` }
+      : { rate: 0, label: 'Tidak ada', note: '' };
+  }
+
   function getDiscountRate() {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    if (customerType === 'member') return totalItems >= 50 ? 0.15 : 0.1;
+    if (customerType === 'member') return getMemberDiscount().rate;
     return totalItems >= 50 ? 0.05 : 0;
   }
 
   function renderCart() {
     const subtotal = cart.reduce((sum, item) => sum + productCatalog[item.id].price * item.quantity, 0);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const discountRate = getDiscountRate();
+    const memberDiscount = customerType === 'member' ? getMemberDiscount() : null;
+    const discountRate = memberDiscount ? memberDiscount.rate : getDiscountRate();
     const discount = Math.round(subtotal * discountRate);
     const total = subtotal - discount;
     posElements.count.textContent = cart.length;
@@ -152,11 +191,11 @@ if (posElements.items) {
     posElements.subtotal.textContent = formatCurrency(subtotal);
     posElements.discount.textContent = discount ? `- ${formatCurrency(discount)}` : '- Rp 0';
     posElements.total.textContent = formatCurrency(total);
-    const label = customerType === 'member' ? `Member ${discountRate * 100}%` : discountRate ? 'Diskon 50+ 5%' : 'Tidak ada';
+    const label = customerType === 'member' ? `${memberDiscount.label} ${discountRate * 100}%` : discountRate ? 'Diskon 50+ 5%' : 'Tidak ada';
     posElements.discountLabel.textContent = label;
     posElements.note.classList.toggle('is-visible', discountRate > 0);
     posElements.note.querySelector('span').textContent = customerType === 'member'
-      ? totalItems >= 50 ? 'Diskon member 15% aktif untuk pesanan 50+ item.' : 'Diskon member 10% aktif untuk transaksi ini.'
+      ? memberDiscount.note
       : 'Diskon pembelian jumlah 50+ item aktif sebesar 5%.';
     document.querySelector('#checkoutButton').disabled = !cart.length;
     updateCashPayment(total);
@@ -274,6 +313,12 @@ if (posElements.items) {
       return;
     }
     const summary = renderCart();
+    latestTransaction = {
+      customerType,
+      customerName: customerType === 'member' ? selectedMember.name : regularCustomerName.value.trim(),
+      total: summary.total,
+      items: cart.map((item) => ({ name: productCatalog[item.id].name, quantity: item.quantity })),
+    };
     document.querySelector('#receiptOrderItems').innerHTML = cart.map((item) => {
       const product = productCatalog[item.id];
       return `<div class="receipt-order-item"><div><strong>${product.name}</strong><small>${item.quantity} × ${formatCurrency(product.price)}</small></div><b>${formatCurrency(product.price * item.quantity)}</b></div>`;
@@ -306,6 +351,23 @@ if (posElements.items) {
   document.querySelector('#processTransaction')?.addEventListener('click', () => document.querySelector('#processConfirmModal').classList.add('is-open'));
   document.querySelector('#cancelProcess')?.addEventListener('click', () => document.querySelector('#processConfirmModal').classList.remove('is-open'));
   document.querySelector('#confirmProcess')?.addEventListener('click', () => {
+    if (latestTransaction?.customerType === 'regular') {
+      const storageKey = 'rojokoyo-customers';
+      let storedCustomers = [];
+      try { storedCustomers = JSON.parse(localStorage.getItem(storageKey)) || []; } catch { storedCustomers = []; }
+      const existing = storedCustomers.find((customer) => customer.type === 'regular' && customer.name.toLowerCase() === latestTransaction.customerName.toLowerCase());
+      const historyItem = { product: latestTransaction.items.map((item) => `${item.name} (${item.quantity})`).join(', '), date: 'Hari ini', value: formatCurrency(latestTransaction.total) };
+      if (existing) {
+        existing.transactions += 1;
+        existing.spentValue = (existing.spentValue || 0) + latestTransaction.total;
+        existing.spent = formatCurrency(existing.spentValue);
+        existing.last = 'Hari ini';
+        existing.history = [historyItem, ...(existing.history || [])];
+      } else {
+        storedCustomers.unshift({ code: `CUS-${String(Date.now()).slice(-4)}`, name: latestTransaction.customerName, type: 'regular', transactions: 1, spentValue: latestTransaction.total, spent: formatCurrency(latestTransaction.total), last: 'Hari ini', history: [historyItem] });
+      }
+      localStorage.setItem(storageKey, JSON.stringify(storedCustomers));
+    }
     document.querySelector('#processConfirmModal').classList.remove('is-open');
     document.querySelector('#receiptModal').classList.remove('is-open');
     document.querySelector('#processSuccessModal').classList.add('is-open');
@@ -392,4 +454,180 @@ if (productionTable) {
     renderProductionCounts(); renderProductionOrders(); openProductionDetail(selectedProductionOrder);
   });
   renderProductionCounts(); renderProductionOrders();
+}
+
+const customerTable = document.querySelector('#customerTable');
+
+if (customerTable) {
+  const customers = [
+    { code: 'MBR-0001', name: 'Nabila Aulia', type: 'member', address: 'Jl. Diponegoro No. 88, Sleman, Yogyakarta', phone: '0812 3456 7890', email: 'nabila.aulia@email.com', discounts: [{ code: 'member', percent: 10 }, { code: 'bulk_50', percent: 15 }], transactions: 12, spent: 'Rp 2.850.000', last: 'Hari ini', history: [['Banner Flexi 3 × 2 m', 'Hari ini', 'Rp 255.000'], ['Undangan Custom', '12 Sep 2026', 'Rp 750.000']] },
+    { code: 'MBR-0002', name: 'Budi Santoso', type: 'member', address: 'Jl. Kaliurang Km 7,8, Sleman, Yogyakarta', phone: '0812 7654 3210', email: 'budi.santoso@email.com', discounts: [{ code: 'member', percent: 10 }, { code: 'bulk_50', percent: 15 }], transactions: 9, spent: 'Rp 1.970.000', last: 'Hari ini', history: [['Undangan Pernikahan', 'Hari ini', 'Rp 1.250.000'], ['Kartu Nama', '02 Sep 2026', 'Rp 150.000']] },
+    { code: 'CUS-0003', name: 'Dimas Pratama', type: 'regular', transactions: 5, spent: 'Rp 1.480.000', last: 'Hari ini', history: [['Sablon Kaos', 'Hari ini', 'Rp 1.225.000'], ['Stiker Vinyl', '21 Agu 2026', 'Rp 160.000']] },
+    { code: 'MBR-0004', name: 'Siti Rahma', type: 'member', address: 'Jl. Magelang No. 102, Yogyakarta', phone: '0821 9876 5432', email: 'siti.rahma@email.com', discounts: [{ code: 'member', percent: 10 }, { code: 'bulk_50', percent: 15 }], transactions: 8, spent: 'Rp 1.640.000', last: 'Hari ini', history: [['Stiker Vinyl', 'Hari ini', 'Rp 800.000'], ['Banner Flexi', '01 Sep 2026', 'Rp 450.000']] },
+    { code: 'CUS-0005', name: 'Andi Kurniawan', type: 'regular', transactions: 4, spent: 'Rp 790.000', last: 'Kemarin', history: [['Kartu Nama', 'Kemarin', 'Rp 250.000'], ['Fotokopi Warna', '23 Agu 2026', 'Rp 75.000']] },
+    { code: 'MBR-0006', name: 'Maya Putri', type: 'member', address: 'Jl. Godean No. 45, Sleman, Yogyakarta', phone: '0878 1234 5678', email: 'maya.putri@email.com', discounts: [{ code: 'member', percent: 10 }, { code: 'bulk_50', percent: 15 }], transactions: 11, spent: 'Rp 3.120.000', last: 'Kemarin', history: [['Spanduk Kain', 'Kemarin', 'Rp 950.000'], ['Label Produk', '04 Sep 2026', 'Rp 600.000']] },
+    { code: 'CUS-0007', name: 'Fajar Nugroho', type: 'regular', transactions: 3, spent: 'Rp 385.000', last: '15 Sep 2026', history: [['Fotokopi Warna', '15 Sep 2026', 'Rp 75.000'], ['Banner Flexi', '10 Agu 2026', 'Rp 310.000']] },
+    { code: 'MBR-0008', name: 'Dewi Lestari', type: 'member', address: 'Jl. Solo Km 9, Kalasan, Sleman', phone: '0813 6789 0123', email: 'dewi.lestari@email.com', discounts: [{ code: 'member', percent: 10 }, { code: 'bulk_50', percent: 15 }], transactions: 7, spent: 'Rp 1.890.000', last: '15 Sep 2026', history: [['Label Produk', '15 Sep 2026', 'Rp 450.000'], ['Brosur A5', '30 Agu 2026', 'Rp 500.000']] },
+    { code: 'CUS-0009', name: 'Rizky Maulana', type: 'regular', transactions: 6, spent: 'Rp 2.100.000', last: '14 Sep 2026', history: [['Roll Banner', '14 Sep 2026', 'Rp 1.300.000'], ['Stiker Vinyl', '21 Agu 2026', 'Rp 240.000']] },
+    { code: 'MBR-0010', name: 'Rina Wulandari', type: 'member', address: 'Jl. Wates No. 17, Yogyakarta', phone: '0896 1234 5670', email: 'rina.wulandari@email.com', discounts: [{ code: 'member', percent: 10 }, { code: 'bulk_50', percent: 15 }], transactions: 10, spent: 'Rp 2.450.000', last: '14 Sep 2026', history: [['Brosur A5', '14 Sep 2026', 'Rp 600.000'], ['Banner Flexi', '05 Sep 2026', 'Rp 780.000']] },
+  ];
+  const customerStorageKey = 'rojokoyo-customers';
+  let savedCustomers = [];
+  try {
+    savedCustomers = JSON.parse(localStorage.getItem(customerStorageKey)) || [];
+    const hadDeletedMembers = savedCustomers.some((customer) => customer.isDeleted);
+    savedCustomers = savedCustomers.map(({ isDeleted, ...customer }) => customer);
+    if (hadDeletedMembers) localStorage.setItem(customerStorageKey, JSON.stringify(savedCustomers));
+  } catch { savedCustomers = []; }
+  savedCustomers.forEach((savedCustomer) => {
+    const index = customers.findIndex((customer) => customer.code === savedCustomer.code);
+    if (index >= 0) {
+      customers[index] = savedCustomer;
+    } else {
+      customers.push(savedCustomer);
+    }
+  });
+  let customerFilter = 'all';
+  let selectedCustomer = null;
+  let editingMember = null;
+  const initials = (name) => name.split(' ').slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+  const typeLabel = (type) => type === 'member' ? 'Member' : 'Pelanggan Umum';
+
+  function renderCustomers() {
+    const term = document.querySelector('#customerSearch').value.toLowerCase().trim();
+    const visible = customers.filter((customer) => (customerFilter === 'all' || customer.type === customerFilter) && customer.name.toLowerCase().includes(term));
+    customerTable.innerHTML = visible.map((customer) => `<tr><td><span class="customer-table-profile"><span class="customer-table-avatar">${initials(customer.name)}</span><span><strong>${customer.name}</strong><span>${customer.code}</span></span></span></td><td><span class="customer-type customer-type--${customer.type}">${typeLabel(customer.type)}</span></td><td>${customer.transactions} transaksi</td><td><strong>${customer.spent}</strong></td><td>${customer.last}</td><td><button class="customer-detail-button" type="button" data-customer-code="${customer.code}">Detail</button></td></tr>`).join('');
+    document.querySelector('#emptyCustomers').hidden = visible.length !== 0;
+  }
+
+  function renderCustomerCounts() {
+    document.querySelector('#customerCountAll').textContent = customers.length;
+    document.querySelector('#customerCountMember').textContent = customers.filter((customer) => customer.type === 'member').length;
+  }
+
+  function openCustomerDetail(customer) {
+    selectedCustomer = customer;
+    document.querySelector('#detailCustomerCode').textContent = customer.code;
+    document.querySelector('#customerDetailTitle').textContent = customer.type === 'member' ? 'Detail Member' : 'Detail Pelanggan';
+    document.querySelector('#detailCustomerName').textContent = customer.name;
+    document.querySelector('#detailCustomerInitial').textContent = initials(customer.name);
+    document.querySelector('#detailCustomerType').textContent = customer.type === 'member' ? 'Member 88 Rojokoyo' : 'Pelanggan Umum';
+    const badge = document.querySelector('#detailCustomerBadge');
+    badge.textContent = typeLabel(customer.type); badge.className = `customer-profile__badge customer-type customer-type--${customer.type}`;
+    document.querySelector('#detailCustomerTransactions').textContent = `${customer.transactions} transaksi`;
+    document.querySelector('#detailCustomerSpent').textContent = customer.spent;
+    document.querySelector('#detailCustomerLast').textContent = customer.last;
+    const personalInfo = document.querySelector('#memberPersonalInfo');
+    personalInfo.hidden = customer.type !== 'member';
+    document.querySelector('#memberDetailActions').hidden = customer.type !== 'member';
+    if (customer.type === 'member') {
+      document.querySelector('#detailMemberAddress').textContent = customer.address || 'Belum diisi';
+      document.querySelector('#detailMemberPhone').textContent = customer.phone || 'Belum diisi';
+      document.querySelector('#detailMemberEmail').textContent = customer.email || 'Belum diisi';
+    }
+    const benefits = document.querySelector('#memberBenefits');
+    benefits.hidden = customer.type !== 'member';
+    if (customer.type === 'member') {
+      const discounts = normalizeMemberDiscounts(customer.discounts?.length ? customer.discounts : memberDiscountRules.map((rule) => ({ code: rule.code, percent: rule.defaultPercent })));
+      benefits.innerHTML = `<h3>Benefit Member</h3>${discounts.map((discount) => `<div><span>${memberDiscountRules.find((rule) => rule.code === discount.code).name}</span><b>${discount.percent}%</b></div>`).join('')}`;
+    }
+    document.querySelector('#customerHistory').innerHTML = customer.history.map((entry) => {
+      const [product, date, value] = Array.isArray(entry) ? entry : [entry.product, entry.date, entry.value];
+      return `<article class="customer-history__item"><div><strong>${product}</strong><span>${date}</span></div><b>${value}</b></article>`;
+    }).join('');
+    document.querySelector('#customerDetailModal').classList.add('is-open');
+  }
+
+  function setCustomerFilter(filter) {
+    customerFilter = filter;
+    document.querySelectorAll('[data-customer-filter]').forEach((button) => button.classList.toggle('is-active', button.dataset.customerFilter === filter));
+    renderCustomers();
+  }
+
+  document.querySelectorAll('[data-customer-filter]').forEach((button) => button.addEventListener('click', () => setCustomerFilter(button.dataset.customerFilter)));
+  document.querySelector('#customerSearch').addEventListener('input', renderCustomers);
+  customerTable.addEventListener('click', (event) => { const button = event.target.closest('[data-customer-code]'); if (button) openCustomerDetail(customers.find((customer) => customer.code === button.dataset.customerCode)); });
+  document.querySelector('#closeCustomerDetail').addEventListener('click', () => document.querySelector('#customerDetailModal').classList.remove('is-open'));
+  const addMemberButton = document.querySelector('#addCustomer');
+  const defaultDiscounts = memberDiscountRules.map((rule) => ({ code: rule.code, percent: rule.defaultPercent }));
+  const memberForm = document.querySelector('#addCustomerForm');
+  function setMemberDiscountFields(discounts = []) {
+    const configuredDiscounts = normalizeMemberDiscounts(discounts);
+    memberDiscountRules.forEach((rule) => {
+      const setting = configuredDiscounts.find((discount) => discount.code === rule.code);
+      const checkbox = document.querySelector(`[data-discount-code="${rule.code}"]`);
+      const percentInput = document.querySelector(`[data-discount-percent="${rule.code}"]`);
+      checkbox.checked = Boolean(setting);
+      percentInput.value = setting?.percent ?? rule.defaultPercent;
+      percentInput.disabled = !checkbox.checked;
+      percentInput.required = checkbox.checked;
+      checkbox.closest('.member-discount-option').classList.toggle('is-active', checkbox.checked);
+    });
+  }
+  function openMemberForm(member = null) {
+    editingMember = member;
+    memberForm.reset();
+    document.querySelector('#memberFormEyebrow').textContent = member ? 'EDIT MEMBER' : 'MEMBER BARU';
+    document.querySelector('#addCustomerTitle').textContent = member ? 'Edit Member' : 'Tambah Member';
+    document.querySelector('#saveMemberButton').textContent = member ? 'Simpan Perubahan' : 'Simpan Member';
+    if (member) {
+      document.querySelector('#newCustomerName').value = member.name;
+      document.querySelector('#newMemberAddress').value = member.address || '';
+      document.querySelector('#newMemberPhone').value = member.phone || '';
+      document.querySelector('#newMemberEmail').value = member.email || '';
+    }
+    setMemberDiscountFields(member ? (member.discounts?.length ? member.discounts : defaultDiscounts) : defaultDiscounts);
+    document.querySelector('#customerDetailModal').classList.remove('is-open');
+    document.querySelector('#addCustomerModal').classList.add('is-open');
+  }
+  addMemberButton.addEventListener('click', () => openMemberForm());
+  document.querySelector('#closeAddCustomer').addEventListener('click', () => document.querySelector('#addCustomerModal').classList.remove('is-open'));
+  document.querySelector('#editMember').addEventListener('click', () => { if (selectedCustomer?.type === 'member') openMemberForm(selectedCustomer); });
+  document.querySelector('#deleteMember').addEventListener('click', () => {
+    if (selectedCustomer?.type !== 'member') return;
+    document.querySelector('#deleteMemberName').textContent = selectedCustomer.name;
+    document.querySelector('#deleteMemberConfirmModal').classList.add('is-open');
+  });
+  document.querySelector('#cancelDeleteMember').addEventListener('click', () => document.querySelector('#deleteMemberConfirmModal').classList.remove('is-open'));
+  document.querySelector('#confirmDeleteMember').addEventListener('click', () => {
+    if (selectedCustomer?.type !== 'member') return;
+    const deletedMemberName = selectedCustomer.name;
+    const index = customers.findIndex((customer) => customer.code === selectedCustomer.code);
+    if (index >= 0) customers.splice(index, 1);
+    document.querySelector('#deletedMemberSuccessName').textContent = deletedMemberName;
+    document.querySelector('#deleteMemberConfirmModal').classList.remove('is-open');
+    document.querySelector('#customerDetailModal').classList.remove('is-open');
+    document.querySelector('#deleteMemberSuccessModal').classList.add('is-open');
+    renderCustomerCounts(); renderCustomers();
+  });
+  document.querySelector('#closeDeleteMemberSuccess').addEventListener('click', () => document.querySelector('#deleteMemberSuccessModal').classList.remove('is-open'));
+  document.querySelectorAll('.member-discount-checkbox').forEach((checkbox) => checkbox.addEventListener('change', () => {
+    const percentInput = document.querySelector(`[data-discount-percent="${checkbox.dataset.discountCode}"]`);
+    percentInput.disabled = !checkbox.checked;
+    percentInput.required = checkbox.checked;
+    checkbox.closest('.member-discount-option').classList.toggle('is-active', checkbox.checked);
+  }));
+  memberForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const name = document.querySelector('#newCustomerName').value.trim();
+    if (!name) return;
+    const discounts = memberDiscountRules.map((rule) => {
+      const checkbox = document.querySelector(`[data-discount-code="${rule.code}"]`);
+      const percent = Number(document.querySelector(`[data-discount-percent="${rule.code}"]`).value);
+      return checkbox.checked && percent > 0 ? { code: rule.code, percent } : null;
+    }).filter(Boolean);
+    const memberData = { name, type: 'member', address: document.querySelector('#newMemberAddress').value.trim(), phone: document.querySelector('#newMemberPhone').value.trim(), email: document.querySelector('#newMemberEmail').value.trim(), discounts };
+    const member = editingMember ? Object.assign(editingMember, memberData) : { code: `MBR-${String(Date.now()).slice(-4)}`, ...memberData, transactions: 0, spent: 'Rp 0', last: 'Belum ada', history: [] };
+    if (!editingMember) customers.unshift(member);
+    const savedIndex = savedCustomers.findIndex((customer) => customer.code === member.code);
+    if (savedIndex >= 0) savedCustomers[savedIndex] = member;
+    else savedCustomers.push(member);
+    localStorage.setItem(customerStorageKey, JSON.stringify(savedCustomers));
+    document.querySelector('#addCustomerModal').classList.remove('is-open');
+    renderCustomerCounts(); setCustomerFilter('all');
+    if (editingMember) openCustomerDetail(member);
+    editingMember = null;
+  });
+  ['#customerDetailModal', '#addCustomerModal', '#deleteMemberConfirmModal', '#deleteMemberSuccessModal'].forEach((selector) => document.querySelector(selector).addEventListener('click', (event) => { if (event.target.id === event.currentTarget.id) event.currentTarget.classList.remove('is-open'); }));
+  renderCustomerCounts(); renderCustomers();
 }
