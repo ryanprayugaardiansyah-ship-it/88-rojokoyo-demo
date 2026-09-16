@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173e32" />
+    <title>Pesanan Produksi | 88 Rojokoyo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="dashboard-sidebar" id="sidebar">
+        <a class="brand" href="dashboard.html" aria-label="88 Rojokoyo"><span class="brand__mark">88</span><span class="brand__name">ROJOKOYO<small>PRINTING</small></span></a>
+        <nav class="sidebar-menu" aria-label="Navigasi utama">
+          <p class="sidebar-menu__label">MENU UTAMA</p>
+          <a href="dashboard.html"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1"/><rect x="14" y="14" width="6.5" height="6.5" rx="1"/></svg>Dashboard</a>
+          <a href="pos.html"><svg viewBox="0 0 24 24"><path d="M4 6h16l-1 14H5L4 6Z"/><path d="M2 6h20M9 10v6M15 10v6"/></svg>Kasir / POS</a>
+          <a class="is-active" href="pesanan.html"><svg viewBox="0 0 24 24"><path d="M6 3.5h12v17H6zM9 8h6M9 12h6M9 16h3"/></svg>Pesanan Produksi <span class="menu-badge">8</span></a>
+          <a href="pelanggan.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.5 3.2-5.5 7.5-5.5s6.7 2 7.5 5.5"/></svg>Pelanggan &amp; Member</a>
+          <p class="sidebar-menu__label sidebar-menu__label--spaced">PENGELOLAAN</p>
+          <a href="produk.html"><svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="m4 12 8 4 8-4M4 17l8 4 8-4"/></svg>Produk &amp; Layanan</a>
+          <a href="laporan.html"><svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-4M12 16V7M16 16v-7"/></svg>Laporan Penjualan</a>
+          <a href="pengaturan.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 13.4v-2.8l-2-.6a7.6 7.6 0 0 0-.7-1.6l1-1.8-2-2-1.8 1.1a7.6 7.6 0 0 0-1.6-.7L11.4 3H8.6L8 5a7.6 7.6 0 0 0-1.6.7L4.6 4.6l-2 2 1.1 1.8A7.6 7.6 0 0 0 3 10l-2 .6v2.8l2 .6c.2.6.4 1.1.7 1.6l-1.1 1.8 2 2 1.8-1.1c.5.3 1 .5 1.6.7l.6 2h2.8l.6-2c.6-.2 1.1-.4 1.6-.7l1.8 1.1 2-2-1.1-1.8c.3-.5.5-1 .7-1.6l2-.6Z"/></svg>Pengaturan</a>
+        </nav>
+        <div class="sidebar-bottom"><div class="sidebar-user"><span class="user-avatar">AR</span><span><strong>Admin Rojokoyo</strong><span>Administrator</span></span></div></div>
+      </aside>
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      <main class="dashboard-main">
+        <header class="dashboard-header"><button class="menu-button" id="sidebarToggle" type="button" aria-label="Buka menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="dashboard-header__right"><span class="header-date">Rabu, 16 September 2026</span><button class="notification-button" type="button" aria-label="Notifikasi"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button><span class="header-avatar">AR</span></div></header>
+        <div class="dashboard-content production-content">
+          <section class="production-title"><div><h1>Pesanan Produksi</h1><p>Pantau pesanan yang sedang dikerjakan hingga siap diserahkan.</p></div><a class="new-order-button" href="pos.html"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Transaksi Baru</a></section>
+          <section class="production-stats" aria-label="Status pesanan"><button class="production-stat production-stat--all is-active" type="button" data-status-filter="all"><span class="production-stat__count production-stat__count--gray" id="countAll">10</span><span>Semua Pesanan</span></button><button class="production-stat production-stat--processed" type="button" data-status-filter="diproses"><span class="production-stat__count production-stat__count--orange" id="countProcessed">7</span><span>Diproses</span></button><button class="production-stat production-stat--ready" type="button" data-status-filter="siap"><span class="production-stat__count production-stat__count--blue" id="countReady">2</span><span>Siap Diambil</span></button><button class="production-stat production-stat--complete" type="button" data-status-filter="selesai"><span class="production-stat__count production-stat__count--green" id="countComplete">1</span><span>Selesai</span></button></section>
+          <section class="production-panel"><div class="production-tools"><label class="production-search"><svg viewBox="0 0 24 24"><circle cx="10.7" cy="10.7" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="orderSearch" type="search" placeholder="Cari nomor pesanan atau pelanggan..." /></label><div class="production-selects"><select id="dateFilter" aria-label="Filter tanggal"><option value="all">Semua tanggal</option><option value="Hari ini">Hari ini</option><option value="Kemarin">Kemarin</option></select></div></div><div class="orders-table-wrap"><table class="orders-table"><thead><tr><th>Pesanan</th><th>Pelanggan</th><th>Detail</th><th>Estimasi Selesai</th><th>Status</th><th></th></tr></thead><tbody id="productionTable"></tbody></table></div><p class="empty-orders" id="emptyOrders" hidden>Tidak ada pesanan yang sesuai dengan pencarian.</p></section>
+        </div>
+      </main>
+    </div>
+    <div class="production-modal" id="productionModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle"><div class="production-modal__dialog"><header class="production-modal__header"><div><p class="modal-eyebrow" id="modalOrderId">#TRX-2026-0916-024</p><h2 id="detailTitle">Detail Pesanan</h2></div><button class="modal-close" id="closeProductionModal" type="button" aria-label="Tutup detail">×</button></header><div class="production-modal__body"><section class="production-customer"><span class="production-customer__avatar" id="modalInitials">NA</span><div><strong id="modalCustomer">Nabila Aulia</strong><span id="modalPhone">0812-3456-7890 · Member</span></div><a id="modalWhatsapp" href="#" aria-label="Hubungi pelanggan melalui WhatsApp"><svg viewBox="0 0 24 24"><path d="M20.5 11.7a8.3 8.3 0 0 1-12.3 7.3L4 20l1.1-4A8.3 8.3 0 1 1 20.5 11.7Z"/><path d="M8.5 8.3c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.6 1.3c.1.3.1.5 0 .7l-.4.5c-.1.1-.2.3-.1.5.5.9 1.3 1.7 2.2 2.1.2.1.3.1.5-.1l.6-.6c.2-.2.4-.2.6-.1l1.3.6c.3.1.4.3.4.5v.5c0 .4-.2.6-.6.7-.6.1-1.3.1-2-.2-2.4-.9-4.4-2.9-5.4-5.3-.3-.7-.4-1.4-.2-2.1Z"/></svg></a></section><section class="production-detail-grid"><div><span>Jenis Pesanan</span><strong id="modalProduct">Banner Flexi</strong></div><div><span>Jumlah</span><strong id="modalQuantity">1 lembar</strong></div><div><span>Estimasi Selesai</span><strong id="modalDueDate">Hari ini, 16.00</strong></div><div><span>Status Saat Ini</span><strong id="modalStatus">Diproses</strong></div></section><section class="production-spec"><h3>Spesifikasi Pesanan</h3><dl id="modalSpecs"></dl></section><section class="production-note"><h3>Catatan Pelanggan</h3><p id="modalNote"></p></section><section class="production-timeline"><h3>Riwayat Pesanan</h3><ol id="modalTimeline"></ol></section><section class="production-status-update"><label for="modalStatusSelect">Perbarui status pesanan</label><div><select id="modalStatusSelect"><option value="diproses">Diproses</option><option value="siap">Siap Diambil</option><option value="selesai">Selesai</option></select><button id="saveStatusButton" type="button">Simpan Status</button></div></section></div></div></div>
+    <script src="script.js"></script>
+  </body>
+</html>
