@@ -842,8 +842,14 @@ if (reportPage) {
     ['TRX-2026-0916-022', 'Dimas Pratama', 'Sablon Kaos', 'Transfer', 'Rp 1.225.000', 'Selesai'],
     ['TRX-2026-0916-021', 'Siti Rahma', 'Stiker Vinyl', 'Tunai', 'Rp 720.000', 'Siap Diambil'],
   ];
+  const periodLabels = { today: 'Hari ini - 16 September 2026', week: 'Minggu ini - 10-16 September 2026', month: 'Bulan ini - 1-16 September 2026' };
+  const scopeLabels = { complete: 'Laporan Lengkap', summary: 'Ringkasan Penjualan', transactions: 'Daftar Transaksi' };
+  const currencyValue = (value) => Number(String(value).replace(/[^\d]/g, '')) || 0;
+  const percentageValue = (value) => Number(String(value).replace(/[^\d]/g, '')) || 0;
+  let selectedReportPeriod = 'month';
 
   function renderReport(period) {
+    selectedReportPeriod = period;
     const data = reportData[period];
     document.querySelector('#reportRevenue').textContent = data.revenue;
     document.querySelector('#reportRevenueNote').textContent = data.revenueNote;
@@ -864,16 +870,138 @@ if (reportPage) {
     document.querySelector('#memberDiscountTotal').textContent = data.memberDiscount[1];
     document.querySelector('#bulkDiscountUses').textContent = data.bulkDiscount[0];
     document.querySelector('#bulkDiscountTotal').textContent = data.bulkDiscount[1];
+    document.querySelector('#reportExportPeriod').textContent = periodLabels[period];
   }
 
   document.querySelector('#topProducts').innerHTML = topProducts.map((product, index) => `<div class="top-product"><span class="top-product__rank">${index + 1}</span><span class="top-product__main"><strong>${product[0]}</strong><span>${product[1]}</span></span><b>${product[2]}</b></div>`).join('');
   document.querySelector('#recentTransactions').innerHTML = transactions.map((transaction) => `<tr><td><span class="report-table-id">#${transaction[0]}</span></td><td>${transaction[1]}</td><td>${transaction[2]}</td><td><span class="report-payment">${transaction[3]}</span></td><td><strong>${transaction[4]}</strong></td><td><span class="report-status">${transaction[5]}</span></td></tr>`).join('');
   document.querySelector('#reportPeriod').addEventListener('change', (event) => renderReport(event.target.value));
-  document.querySelector('#downloadReport').addEventListener('click', () => {
+
+  const reportExportModal = document.querySelector('#reportExportModal');
+  const showReportToast = (message) => {
     const toast = document.querySelector('#reportToast');
+    document.querySelector('#reportToastMessage').textContent = message;
     toast.classList.add('is-visible');
     window.clearTimeout(window.reportToastTimer);
     window.reportToastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 3200);
+  };
+  const openExportModal = () => reportExportModal.classList.add('is-open');
+  const closeExportModal = () => reportExportModal.classList.remove('is-open');
+
+  function reportSummaryRows(data) {
+    return [
+      ['Total Penjualan', data.revenue],
+      ['Jumlah Transaksi', `${data.transactions} transaksi`],
+      ['Rata-rata Transaksi', data.average],
+      ['Total Diskon', data.discount],
+      ['Transaksi Member', data.memberTransactions],
+      ['Pelanggan Umum', data.regularTransactions],
+    ];
+  }
+
+  function exportPdf(scope) {
+    if (!window.jspdf?.jsPDF) throw new Error('PDF library unavailable');
+    const data = reportData[selectedReportPeriod];
+    const doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+    const addTable = (title, head, body) => {
+      let startY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 12 : 42;
+      if (startY > 260) { doc.addPage(); startY = 18; }
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(52, 73, 62);
+      doc.text(title, 14, startY);
+      doc.autoTable({ startY: startY + 4, head: [head], body, theme: 'grid', styles: { font: 'helvetica', fontSize: 8, cellPadding: 2.5, textColor: [67, 86, 75] }, headStyles: { fillColor: [35, 112, 82], textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [248, 250, 249] }, margin: { left: 14, right: 14 } });
+    };
+    doc.setProperties({ title: `${scopeLabels[scope]} - 88 Rojokoyo` });
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(17);
+    doc.setTextColor(35, 112, 82);
+    doc.text('88 ROJOKOYO', 14, 17);
+    doc.setFontSize(12);
+    doc.setTextColor(52, 73, 62);
+    doc.text(scopeLabels[scope], 14, 25);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(113, 128, 120);
+    doc.text(`Data demo · Periode: ${periodLabels[selectedReportPeriod]}`, 14, 31);
+    doc.setDrawColor(226, 233, 228);
+    doc.line(14, 35, 196, 35);
+
+    if (scope !== 'transactions') {
+      addTable('Ringkasan Penjualan', ['Metrik', 'Nilai'], reportSummaryRows(data));
+      addTable('Metode Pembayaran', ['Metode', 'Proporsi'], [['Tunai', data.payment[1]], ['QRIS', data.payment[2]], ['Transfer', data.payment[3]]]);
+      addTable('Diskon Terpakai', ['Jenis Diskon', 'Pemakaian', 'Nilai Diskon'], [['Diskon Member', data.memberDiscount[0], data.memberDiscount[1]], ['Diskon Pembelian 50+', data.bulkDiscount[0], data.bulkDiscount[1]]]);
+    }
+    if (scope === 'complete') {
+      addTable('Produk & Layanan Terlaris', ['Produk / Layanan', 'Pesanan', 'Omzet'], topProducts.map((product) => [product[0], product[1].split(' · ')[0], product[2]]));
+    }
+    if (scope === 'complete' || scope === 'transactions') {
+      addTable('Daftar Transaksi', ['No. Transaksi', 'Pelanggan', 'Pesanan', 'Pembayaran', 'Total', 'Status'], transactions.map((transaction) => transaction));
+    }
+    const pages = doc.getNumberOfPages();
+    for (let page = 1; page <= pages; page += 1) {
+      doc.setPage(page);
+      doc.setFontSize(7);
+      doc.setTextColor(132, 145, 137);
+      doc.text('88 Rojokoyo · Laporan data demo', 14, 290);
+      doc.text(`Halaman ${page} dari ${pages}`, 196, 290, { align: 'right' });
+    }
+    doc.save(`88-rojokoyo-${scope}-${selectedReportPeriod}.pdf`);
+  }
+
+  function addExcelSheet(workbook, name, rows, widths, currencyCells = []) {
+    const sheet = window.XLSX.utils.aoa_to_sheet(rows);
+    sheet['!cols'] = widths.map((width) => ({ wch: width }));
+    currencyCells.forEach((cellName) => { if (sheet[cellName]) sheet[cellName].z = '"Rp" #,##0'; });
+    window.XLSX.utils.book_append_sheet(workbook, sheet, name);
+  }
+
+  function exportExcel(scope) {
+    if (!window.XLSX) throw new Error('Excel library unavailable');
+    const data = reportData[selectedReportPeriod];
+    const workbook = window.XLSX.utils.book_new();
+    if (scope !== 'transactions') {
+      addExcelSheet(workbook, 'Ringkasan', [
+        ['88 ROJOKOYO - LAPORAN PENJUALAN (DATA DEMO)'],
+        ['Periode', periodLabels[selectedReportPeriod]],
+        [],
+        ['Metrik', 'Nilai'],
+        ['Total Penjualan', currencyValue(data.revenue)],
+        ['Jumlah Transaksi', Number(data.transactions)],
+        ['Rata-rata Transaksi', currencyValue(data.average)],
+        ['Total Diskon', currencyValue(data.discount)],
+        ['Transaksi Member', Number(data.memberTransactions.replace(/[^\d]/g, ''))],
+        ['Pelanggan Umum', Number(data.regularTransactions.replace(/[^\d]/g, ''))],
+      ], [28, 30], ['B5', 'B7', 'B8']);
+      const totalPayment = currencyValue(data.payment[0]);
+      addExcelSheet(workbook, 'Pembayaran', [['Metode Pembayaran', 'Proporsi', 'Total Penjualan'], ['Tunai', data.payment[1], Math.round(totalPayment * percentageValue(data.payment[1]) / 100)], ['QRIS', data.payment[2], Math.round(totalPayment * percentageValue(data.payment[2]) / 100)], ['Transfer', data.payment[3], Math.round(totalPayment * percentageValue(data.payment[3]) / 100)]], [24, 16, 20], ['C2', 'C3', 'C4']);
+      addExcelSheet(workbook, 'Diskon', [['Jenis Diskon', 'Jumlah Transaksi', 'Nilai Diskon'], ['Diskon Member', Number(data.memberDiscount[0].replace(/[^\d]/g, '')), currencyValue(data.memberDiscount[1])], ['Diskon Pembelian 50+', Number(data.bulkDiscount[0].replace(/[^\d]/g, '')), currencyValue(data.bulkDiscount[1])]], [28, 20, 18], ['C2', 'C3']);
+    }
+    if (scope === 'complete') {
+      addExcelSheet(workbook, 'Produk Terlaris', [['Produk / Layanan', 'Jumlah Pesanan', 'Omzet'], ...topProducts.map((product) => [product[0], Number(product[1].match(/^\d+/)?.[0] || 0), currencyValue(product[2])])], [28, 18, 18], ['C2', 'C3', 'C4', 'C5']);
+    }
+    if (scope === 'complete' || scope === 'transactions') {
+      addExcelSheet(workbook, 'Transaksi', [['No. Transaksi', 'Pelanggan', 'Pesanan', 'Pembayaran', 'Total', 'Status'], ...transactions.map((transaction) => [transaction[0], transaction[1], transaction[2], transaction[3], currencyValue(transaction[4]), transaction[5]])], [22, 23, 24, 16, 16, 16], ['E2', 'E3', 'E4', 'E5']);
+    }
+    window.XLSX.writeFile(workbook, `88-rojokoyo-${scope}-${selectedReportPeriod}.xlsx`);
+  }
+
+  document.querySelector('#downloadReport').addEventListener('click', openExportModal);
+  document.querySelector('#closeReportExport').addEventListener('click', closeExportModal);
+  reportExportModal.addEventListener('click', (event) => { if (event.target === reportExportModal) closeExportModal(); });
+  document.querySelector('#reportExportForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const format = formData.get('exportFormat');
+    const scope = formData.get('exportScope');
+    try {
+      if (format === 'pdf') exportPdf(scope);
+      else exportExcel(scope);
+      closeExportModal();
+      showReportToast(`${scopeLabels[scope]} ${format === 'pdf' ? 'PDF' : 'Excel'} berhasil diunduh.`);
+    } catch (error) {
+      showReportToast(`Gagal menyiapkan ${format === 'pdf' ? 'PDF' : 'Excel'}. Periksa koneksi internet lalu coba lagi.`);
+    }
   });
   renderReport('month');
 }

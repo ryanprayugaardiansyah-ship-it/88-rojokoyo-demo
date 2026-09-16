@@ -44,6 +44,20 @@
       </main>
     </div>
     <div class="report-toast" id="reportToast" role="status"><span class="transaction-modal__icon transaction-modal__icon--success"><svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5"/></svg></span><span id="reportToastMessage">Laporan siap diunduh.</span></div>
+    <div class="customer-modal" id="reportExportModal" role="dialog" aria-modal="true" aria-labelledby="reportExportTitle">
+      <div class="customer-modal__dialog customer-modal__dialog--small">
+        <header class="customer-modal__header"><div><p class="modal-eyebrow">UNDUH LAPORAN</p><h2 id="reportExportTitle">Pilih laporan</h2></div><button class="modal-close" id="closeReportExport" type="button" aria-label="Tutup pilihan unduhan">×</button></header>
+        <form class="report-export-form" id="reportExportForm">
+          <p class="report-export-period">Periode terpilih: <strong id="reportExportPeriod">1–16 September 2026</strong></p>
+          <fieldset class="report-export-group"><legend>Format file</legend><div class="report-export-options"><label class="report-export-option"><input type="radio" name="exportFormat" value="pdf" checked><span class="report-export-option__icon report-export-option__icon--pdf">PDF</span><span><strong>PDF</strong><small>Siap dicetak atau dibagikan.</small></span></label><label class="report-export-option"><input type="radio" name="exportFormat" value="excel"><span class="report-export-option__icon report-export-option__icon--excel">XLS</span><span><strong>Excel</strong><small>Data dapat diolah kembali.</small></span></label></div></fieldset>
+          <fieldset class="report-export-group"><legend>Isi laporan</legend><div class="report-export-options report-export-options--scope"><label class="report-export-option"><input type="radio" name="exportScope" value="complete" checked><span><strong>Laporan lengkap</strong><small>Ringkasan, pembayaran, produk, diskon, dan transaksi.</small></span></label><label class="report-export-option"><input type="radio" name="exportScope" value="summary"><span><strong>Ringkasan penjualan</strong><small>Omzet, transaksi, pelanggan, pembayaran, dan diskon.</small></span></label><label class="report-export-option"><input type="radio" name="exportScope" value="transactions"><span><strong>Daftar transaksi</strong><small>Rincian transaksi pada periode terpilih.</small></span></label></div></fieldset>
+          <button class="report-export-submit" type="submit">Unduh laporan</button>
+        </form>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
