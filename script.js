@@ -257,11 +257,25 @@ if (posElements.items) {
 
   document.querySelector('#checkoutButton')?.addEventListener('click', () => {
     const summary = renderCart();
+    document.querySelector('#receiptOrderItems').innerHTML = cart.map((item) => {
+      const product = productCatalog[item.id];
+      return `<div class="receipt-order-item"><div><strong>${product.name}</strong><small>${item.quantity} × ${formatCurrency(product.price)}</small></div><b>${formatCurrency(product.price * item.quantity)}</b></div>`;
+    }).join('');
     document.querySelector('#receiptCustomer').textContent = customerType === 'member' ? `${selectedMember.name} (Member)` : 'Pelanggan Umum';
     document.querySelector('#receiptItems').textContent = `${summary.totalItems} item`;
     document.querySelector('#receiptPayment').textContent = paymentMethod;
     document.querySelector('#receiptDiscount').textContent = `- ${formatCurrency(summary.discount)}`;
     document.querySelector('#receiptTotal').textContent = formatCurrency(summary.total);
+    const isCashPayment = paymentMethod === 'Tunai';
+    const paid = Number(document.querySelector('#cashPaid')?.value) || 0;
+    const difference = paid - summary.total;
+    document.querySelector('#receiptCashPaidRow').hidden = !isCashPayment;
+    document.querySelector('#receiptChangeRow').hidden = !isCashPayment;
+    if (isCashPayment) {
+      document.querySelector('#receiptCashPaid').textContent = formatCurrency(paid);
+      document.querySelector('#receiptChangeRow span').textContent = difference < 0 ? 'Kekurangan pembayaran' : 'Kembalian';
+      document.querySelector('#receiptChange').textContent = difference < 0 ? `- ${formatCurrency(Math.abs(difference))}` : formatCurrency(difference);
+    }
     document.querySelector('#receiptModal').classList.add('is-open');
   });
 
