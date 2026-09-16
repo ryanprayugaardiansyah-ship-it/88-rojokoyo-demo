@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#173e32" />
+  <title>Pengaturan | 88 Rojokoyo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="dashboard-sidebar" id="sidebar">
+      <a class="brand" href="dashboard.html" aria-label="88 Rojokoyo"><span class="brand__mark">88</span><span
+          class="brand__name">ROJOKOYO<small>PRINTING</small></span></a>
+      <nav class="sidebar-menu" aria-label="Navigasi utama">
+        <p class="sidebar-menu__label">MENU UTAMA</p>
+        <a href="dashboard.html"><svg viewBox="0 0 24 24">
+            <rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1" />
+            <rect x="14" y="3.5" width="6.5" height="6.5" rx="1" />
+            <rect x="3.5" y="14" width="6.5" height="6.5" rx="1" />
+            <rect x="14" y="14" width="6.5" height="6.5" rx="1" />
+          </svg>Dashboard</a>
+        <a href="pos.html"><svg viewBox="0 0 24 24">
+            <path d="M4 6h16l-1 14H5L4 6Z" />
+            <path d="M2 6h20M9 10v6M15 10v6" />
+          </svg>Kasir / POS</a>
+        <a href="pesanan.html"><svg viewBox="0 0 24 24">
+            <path d="M6 3.5h12v17H6zM9 8h6M9 12h6M9 16h3" />
+          </svg>Pesanan Produksi <span class="menu-badge">8</span></a>
+        <a href="pelanggan.html"><svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="3.5" />
+            <path d="M4.5 20c.8-3.5 3.2-5.5 7.5-5.5s6.7 2 7.5 5.5" />
+          </svg>Pelanggan &amp; Member</a>
+        <p class="sidebar-menu__label sidebar-menu__label--spaced">PENGELOLAAN</p>
+        <a href="produk.html"><svg viewBox="0 0 24 24">
+            <path d="m4 7 8-4 8 4-8 4-8-4Z" />
+            <path d="m4 12 8 4 8-4M4 17l8 4 8-4" />
+          </svg>Produk &amp; Layanan</a>
+        <a href="laporan.html"><svg viewBox="0 0 24 24">
+            <path d="M4 20V4M4 20h16M8 16v-4M12 16v-7" />
+          </svg>Laporan Penjualan</a>
+        <a class="is-active" href="pengaturan.html"><svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19 13.4v-2.8l-2-.6a7.6 7.6 0 0 0-.7-1.6l1-1.8-2-2-1.8 1.1a7.6 7.6 0 0 0-1.6-.7L11.4 3H8.6L8 5a7.6 7.6 0 0 0-1.6.7L4.6 4.6l-2 2 1.1 1.8A7.6 7.6 0 0 0 3 10l-2 .6v2.8l2 .6c.2.6.4 1.1.7 1.6l-1.1 1.8 2 2 1.8-1.1c.5.3 1 .5 1.6.7l.6 2h2.8l.6-2c.6-.2 1.1-.4 1.6-.7l1.8 1.1 2-2-1.1-1.8c.3-.5.5-1 .7-1.6l2-.6Z" />
+          </svg>Pengaturan</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-user"><span class="user-avatar">AR</span><span><strong>Admin
+              Rojokoyo</strong><span>Administrator</span></span></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <main class="dashboard-main">
+      <header class="dashboard-header"><button class="menu-button" id="sidebarToggle" type="button"
+          aria-label="Buka menu"><svg viewBox="0 0 24 24">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg></button>
+        <div class="dashboard-header__right"><span class="header-date">Rabu, 16 September 2026</span><button
+            class="notification-button" type="button" aria-label="Notifikasi"><svg viewBox="0 0 24 24">
+              <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+            </svg><i></i></button><span class="header-avatar">AR</span></div>
+      </header>
+      <div class="dashboard-content settings-content">
+        <section class="settings-empty"><span class="settings-empty__icon"><svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19 13.4v-2.8l-2-.6a7.6 7.6 0 0 0-.7-1.6l1-1.8-2-2-1.8 1.1a7.6 7.6 0 0 0-1.6-.7L11.4 3H8.6L8 5a7.6 7.6 0 0 0-1.6.7L4.6 4.6l-2 2 1.1 1.8A7.6 7.6 0 0 0 3 10l-2 .6v2.8l2 .6c.2.6.4 1.1.7 1.6l-1.1 1.8 2 2 1.8-1.1c.5.3 1 .5 1.6.7l.6 2h2.8l.6-2c.6-.2 1.1-.4 1.6-.7l1.8 1.1 2-2-1.1-1.8c.3-.5.5-1 .7-1.6l2-.6Z" />
+            </svg></span>
+          <p class="settings-empty__eyebrow">PENGATURAN</p>
+          <h1>Fitur ini akan segera tersedia</h1><a href="dashboard.html">Kembali ke Dashboard</a>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>

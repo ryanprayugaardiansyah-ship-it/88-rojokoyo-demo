@@ -84,6 +84,81 @@ sidebarToggle?.addEventListener('click', () => {
 
 sidebarOverlay?.addEventListener('click', closeSidebar);
 
+const dashboardHeader = document.querySelector('.dashboard-header');
+
+if (dashboardHeader) {
+  document.querySelectorAll('.notification-button').forEach((button) => button.remove());
+  const globalSearch = document.createElement('div');
+  globalSearch.className = 'global-search';
+  globalSearch.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="globalSearch" type="search" placeholder="Cari menu, pelanggan, atau transaksi..." aria-label="Pencarian global" autocomplete="off" /><kbd>Ctrl K</kbd><div class="global-search__results" id="globalSearchResults" hidden></div>';
+  dashboardHeader.querySelector('.menu-button')?.insertAdjacentElement('afterend', globalSearch);
+
+  const globalSearchInput = globalSearch.querySelector('#globalSearch');
+  const globalSearchResults = globalSearch.querySelector('#globalSearchResults');
+  const navigationItems = [
+    { name: 'Dashboard', detail: 'Ringkasan usaha', href: 'dashboard.html' },
+    { name: 'Kasir / POS', detail: 'Buat transaksi baru', href: 'pos.html' },
+    { name: 'Pesanan Produksi', detail: 'Kelola pesanan cetak', href: 'pesanan.html' },
+    { name: 'Pelanggan & Member', detail: 'Data pelanggan dan member', href: 'pelanggan.html' },
+    { name: 'Produk & Layanan', detail: 'Katalog produk dan jasa', href: 'produk.html' },
+    { name: 'Laporan Penjualan', detail: 'Ringkasan omzet dan transaksi', href: 'laporan.html' },
+    { name: 'Pengaturan', detail: 'Pengaturan sistem', href: 'pengaturan.html' },
+  ];
+
+  function renderGlobalSearchResults(term = '') {
+    const matches = navigationItems.filter((item) => `${item.name} ${item.detail}`.toLowerCase().includes(term.toLowerCase().trim())).slice(0, 5);
+    globalSearchResults.innerHTML = matches.length ? matches.map((item) => `<a href="${item.href}"><strong>${item.name}</strong><span>${item.detail}</span></a>`).join('') : '<p>Menu tidak ditemukan.</p>';
+    globalSearchResults.hidden = false;
+  }
+
+  globalSearchInput.addEventListener('focus', () => renderGlobalSearchResults(globalSearchInput.value));
+  globalSearchInput.addEventListener('input', () => renderGlobalSearchResults(globalSearchInput.value));
+  globalSearchInput.addEventListener('keydown', (event) => { if (event.key === 'Escape') { globalSearchResults.hidden = true; globalSearchInput.blur(); } });
+  document.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      globalSearchInput.focus();
+    }
+  });
+  document.addEventListener('click', (event) => { if (!globalSearch.contains(event.target)) globalSearchResults.hidden = true; });
+
+  const currentAvatar = dashboardHeader.querySelector('.header-avatar');
+  if (currentAvatar) {
+    const profileMenu = document.createElement('div');
+    profileMenu.className = 'profile-menu';
+    profileMenu.innerHTML = `<button class="profile-menu__trigger" type="button" aria-label="Buka menu profil" aria-expanded="false"><span class="header-avatar">${currentAvatar.textContent}</span></button><div class="profile-menu__dropdown"><p><strong>Admin Rojokoyo</strong><span>Administrator</span></p><button id="logoutButton" type="button"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M13 5h5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/></svg>Logout</button></div>`;
+    currentAvatar.replaceWith(profileMenu);
+    const profileTrigger = profileMenu.querySelector('.profile-menu__trigger');
+    profileTrigger.addEventListener('click', () => {
+      const isOpen = profileMenu.classList.toggle('is-open');
+      profileTrigger.setAttribute('aria-expanded', String(isOpen));
+    });
+    document.addEventListener('click', (event) => {
+      if (!profileMenu.contains(event.target)) {
+        profileMenu.classList.remove('is-open');
+        profileTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    const logoutModal = document.createElement('div');
+    logoutModal.className = 'transaction-modal';
+    logoutModal.id = 'logoutConfirmModal';
+    logoutModal.setAttribute('role', 'dialog');
+    logoutModal.setAttribute('aria-modal', 'true');
+    logoutModal.setAttribute('aria-labelledby', 'logoutConfirmTitle');
+    logoutModal.innerHTML = '<div class="transaction-modal__dialog"><span class="transaction-modal__icon transaction-modal__icon--question">?</span><h2 id="logoutConfirmTitle">Keluar dari akun?</h2><p>Anda akan kembali ke halaman login dan perlu masuk lagi untuk mengakses dashboard.</p><div class="transaction-modal__actions"><button id="cancelLogout" type="button">Batal</button><button class="transaction-modal__primary" id="confirmLogout" type="button">Ya, Logout</button></div></div>';
+    document.body.append(logoutModal);
+    profileMenu.querySelector('#logoutButton').addEventListener('click', () => {
+      profileMenu.classList.remove('is-open');
+      profileTrigger.setAttribute('aria-expanded', 'false');
+      logoutModal.classList.add('is-open');
+    });
+    logoutModal.querySelector('#cancelLogout').addEventListener('click', () => logoutModal.classList.remove('is-open'));
+    logoutModal.querySelector('#confirmLogout').addEventListener('click', () => { window.location.href = 'login.html'; });
+    logoutModal.addEventListener('click', (event) => { if (event.target === logoutModal) logoutModal.classList.remove('is-open'); });
+  }
+}
+
 const productCatalog = {
   banner: { name: 'Banner Flexi', price: 150000 },
   undangan: { name: 'Undangan Custom', price: 2500 },
@@ -745,4 +820,60 @@ if (catalogTable) {
     editingCatalogItem = null;
   });
   renderCatalogCounts(); renderCatalog();
+}
+
+const reportPage = document.querySelector('#reportPage');
+
+if (reportPage) {
+  const reportData = {
+    today: { revenue: 'Rp 1.275.000', revenueNote: '+8,2% dari kemarin', transactions: '7', transactionsNote: 'Rata-rata 7 transaksi / hari', average: 'Rp 182.000', discount: 'Rp 62.500', discountNote: 'Diskon member & 50+', subtitle: '16 September 2026', payment: ['Rp 1.275.000', '57%', '29%', '14%'], memberShare: '57%', memberTransactions: '4 transaksi', regularTransactions: '3 transaksi', memberDiscount: ['3 transaksi', 'Rp 37.500'], bulkDiscount: ['1 transaksi', 'Rp 25.000'] },
+    week: { revenue: 'Rp 4.650.000', revenueNote: '+10,4% dari minggu lalu', transactions: '26', transactionsNote: 'Rata-rata 4 transaksi / hari', average: 'Rp 178.000', discount: 'Rp 215.000', discountNote: 'Diskon member & 50+', subtitle: '10–16 September 2026', payment: ['Rp 4.650.000', '54%', '30%', '16%'], memberShare: '61%', memberTransactions: '16 transaksi', regularTransactions: '10 transaksi', memberDiscount: ['12 transaksi', 'Rp 125.000'], bulkDiscount: ['4 transaksi', 'Rp 90.000'] },
+    month: { revenue: 'Rp 8.750.000', revenueNote: '+12,5% dari bulan lalu', transactions: '48', transactionsNote: 'Rata-rata 2 transaksi / hari', average: 'Rp 182.000', discount: 'Rp 425.000', discountNote: 'Diskon member & 50+', subtitle: '1–16 September 2026', payment: ['Rp 8.750.000', '52%', '31%', '17%'], memberShare: '62%', memberTransactions: '30 transaksi', regularTransactions: '18 transaksi', memberDiscount: ['21 transaksi', 'Rp 235.000'], bulkDiscount: ['8 transaksi', 'Rp 190.000'] },
+  };
+  const topProducts = [
+    ['Banner Flexi', '12 pesanan · Rp 2.400.000', 'Rp 2.400.000'],
+    ['Undangan Custom', '9 pesanan · Rp 1.875.000', 'Rp 1.875.000'],
+    ['Sablon Kaos', '8 pesanan · Rp 1.540.000', 'Rp 1.540.000'],
+    ['Stiker Vinyl', '11 pesanan · Rp 920.000', 'Rp 920.000'],
+  ];
+  const transactions = [
+    ['TRX-2026-0916-024', 'Nabila Aulia', 'Banner Flexi', 'Tunai', 'Rp 233.750', 'Diproses'],
+    ['TRX-2026-0916-023', 'Budi Santoso', 'Undangan Custom', 'QRIS', 'Rp 1.125.000', 'Diproses'],
+    ['TRX-2026-0916-022', 'Dimas Pratama', 'Sablon Kaos', 'Transfer', 'Rp 1.225.000', 'Selesai'],
+    ['TRX-2026-0916-021', 'Siti Rahma', 'Stiker Vinyl', 'Tunai', 'Rp 720.000', 'Siap Diambil'],
+  ];
+
+  function renderReport(period) {
+    const data = reportData[period];
+    document.querySelector('#reportRevenue').textContent = data.revenue;
+    document.querySelector('#reportRevenueNote').textContent = data.revenueNote;
+    document.querySelector('#reportTransactions').textContent = data.transactions;
+    document.querySelector('#reportTransactionsNote').textContent = data.transactionsNote;
+    document.querySelector('#reportAverage').textContent = data.average;
+    document.querySelector('#reportDiscount').textContent = data.discount;
+    document.querySelector('#reportDiscountNote').textContent = data.discountNote;
+    document.querySelector('#reportChartSubtitle').textContent = data.subtitle;
+    document.querySelector('#paymentTotal').textContent = data.payment[0];
+    document.querySelector('#paymentCash').textContent = data.payment[1];
+    document.querySelector('#paymentQris').textContent = data.payment[2];
+    document.querySelector('#paymentTransfer').textContent = data.payment[3];
+    document.querySelector('#memberShare').textContent = data.memberShare;
+    document.querySelector('#memberTransactions').textContent = data.memberTransactions;
+    document.querySelector('#regularTransactions').textContent = data.regularTransactions;
+    document.querySelector('#memberDiscountUses').textContent = data.memberDiscount[0];
+    document.querySelector('#memberDiscountTotal').textContent = data.memberDiscount[1];
+    document.querySelector('#bulkDiscountUses').textContent = data.bulkDiscount[0];
+    document.querySelector('#bulkDiscountTotal').textContent = data.bulkDiscount[1];
+  }
+
+  document.querySelector('#topProducts').innerHTML = topProducts.map((product, index) => `<div class="top-product"><span class="top-product__rank">${index + 1}</span><span class="top-product__main"><strong>${product[0]}</strong><span>${product[1]}</span></span><b>${product[2]}</b></div>`).join('');
+  document.querySelector('#recentTransactions').innerHTML = transactions.map((transaction) => `<tr><td><span class="report-table-id">#${transaction[0]}</span></td><td>${transaction[1]}</td><td>${transaction[2]}</td><td><span class="report-payment">${transaction[3]}</span></td><td><strong>${transaction[4]}</strong></td><td><span class="report-status">${transaction[5]}</span></td></tr>`).join('');
+  document.querySelector('#reportPeriod').addEventListener('change', (event) => renderReport(event.target.value));
+  document.querySelector('#downloadReport').addEventListener('click', () => {
+    const toast = document.querySelector('#reportToast');
+    toast.classList.add('is-visible');
+    window.clearTimeout(window.reportToastTimer);
+    window.reportToastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 3200);
+  });
+  renderReport('month');
 }

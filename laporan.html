@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173e32" />
+    <title>Laporan Penjualan | 88 Rojokoyo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="dashboard-sidebar" id="sidebar">
+        <a class="brand" href="dashboard.html" aria-label="88 Rojokoyo"><span class="brand__mark">88</span><span class="brand__name">ROJOKOYO<small>PRINTING</small></span></a>
+        <nav class="sidebar-menu" aria-label="Navigasi utama">
+          <p class="sidebar-menu__label">MENU UTAMA</p>
+          <a href="dashboard.html"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1"/><rect x="14" y="14" width="6.5" height="6.5" rx="1"/></svg>Dashboard</a>
+          <a href="pos.html"><svg viewBox="0 0 24 24"><path d="M4 6h16l-1 14H5L4 6Z"/><path d="M2 6h20M9 10v6M15 10v6"/></svg>Kasir / POS</a>
+          <a href="pesanan.html"><svg viewBox="0 0 24 24"><path d="M6 3.5h12v17H6zM9 8h6M9 12h6M9 16h3"/></svg>Pesanan Produksi <span class="menu-badge">8</span></a>
+          <a href="pelanggan.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.5 3.2-5.5 7.5-5.5s6.7 2 7.5 5.5"/></svg>Pelanggan &amp; Member</a>
+          <p class="sidebar-menu__label sidebar-menu__label--spaced">PENGELOLAAN</p>
+          <a href="produk.html"><svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="m4 12 8 4 8-4M4 17l8 4 8-4"/></svg>Produk &amp; Layanan</a>
+          <a class="is-active" href="laporan.html"><svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-4M12 16v-7"/></svg>Laporan Penjualan</a>
+          <a href="pengaturan.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 13.4v-2.8l-2-.6a7.6 7.6 0 0 0-.7-1.6l1-1.8-2-2-1.8 1.1a7.6 7.6 0 0 0-1.6-.7L11.4 3H8.6L8 5a7.6 7.6 0 0 0-1.6.7L4.6 4.6l-2 2 1.1 1.8A7.6 7.6 0 0 0 3 10l-2 .6v2.8l2 .6c.2.6.4 1.1.7 1.6l-1.1 1.8 2 2 1.8-1.1c.5.3 1 .5 1.6.7l.6 2h2.8l.6-2c.6-.2 1.1-.4 1.6-.7l1.8 1.1 2-2-1.1-1.8c.3-.5.5-1 .7-1.6l2-.6Z"/></svg>Pengaturan</a>
+        </nav>
+        <div class="sidebar-bottom"><div class="sidebar-user"><span class="user-avatar">AR</span><span><strong>Admin Rojokoyo</strong><span>Administrator</span></span></div></div>
+      </aside>
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      <main class="dashboard-main">
+        <header class="dashboard-header"><button class="menu-button" id="sidebarToggle" type="button" aria-label="Buka menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="dashboard-header__right"><span class="header-date">Rabu, 16 September 2026</span><button class="notification-button" type="button" aria-label="Notifikasi"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button><span class="header-avatar">AR</span></div></header>
+        <div class="dashboard-content report-content" id="reportPage">
+          <section class="report-title"><div><h1>Laporan Penjualan</h1><p>Pantau performa penjualan 88 Rojokoyo dalam satu tempat.</p></div><div class="report-title__actions"><label class="report-period"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><select id="reportPeriod"><option value="today">Hari ini</option><option value="week">Minggu ini</option><option value="month" selected>Bulan ini</option></select></label><button class="report-download" id="downloadReport" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg>Unduh</button></div></section>
+          <section class="report-stats"><article class="report-stat"><span class="report-stat__icon report-stat__icon--orange"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 7V4h10v3M8 11h8M8 15h5"/></svg></span><span>Total Penjualan</span><strong id="reportRevenue">Rp 8.750.000</strong><small id="reportRevenueNote">+12,5% dari bulan lalu</small></article><article class="report-stat"><span class="report-stat__icon report-stat__icon--blue"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M12 7v5l3 2"/></svg></span><span>Jumlah Transaksi</span><strong id="reportTransactions">48</strong><small id="reportTransactionsNote">Rata-rata 2 transaksi / hari</small></article><article class="report-stat"><span class="report-stat__icon report-stat__icon--purple"><svg viewBox="0 0 24 24"><path d="M6 3v18M6 12h10l-2-3 4-3-2 6H6"/></svg></span><span>Rata-rata Transaksi</span><strong id="reportAverage">Rp 182.000</strong><small id="reportAverageNote">Nilai per transaksi</small></article><article class="report-stat"><span class="report-stat__icon report-stat__icon--green"><svg viewBox="0 0 24 24"><path d="M7 7h10l2 5-7 8-7-8 2-5ZM9 7l3 13 3-13"/></svg></span><span>Total Diskon</span><strong id="reportDiscount">Rp 425.000</strong><small id="reportDiscountNote">Diskon member &amp; 50+</small></article></section>
+          <section class="report-grid">
+            <article class="report-panel report-panel--chart"><header><div><h2>Tren Penjualan</h2><p id="reportChartSubtitle">1–16 September 2026</p></div><span class="report-panel__legend"><i></i> Omzet</span></header><div class="sales-chart" id="salesChart"><div class="sales-chart__bars"><span style="--bar:44%"><i></i><b>1</b></span><span style="--bar:62%"><i></i><b>3</b></span><span style="--bar:36%"><i></i><b>5</b></span><span style="--bar:79%"><i></i><b>7</b></span><span style="--bar:58%"><i></i><b>9</b></span><span style="--bar:92%"><i></i><b>11</b></span><span style="--bar:68%"><i></i><b>13</b></span><span style="--bar:85%"><i></i><b>15</b></span></div></div></article>
+            <article class="report-panel report-panel--payment"><header><div><h2>Metode Pembayaran</h2><p>Transaksi periode terpilih</p></div></header><div class="payment-total"><strong id="paymentTotal">Rp 8.750.000</strong><span>Total pembayaran</span></div><div class="payment-list"><div><span class="payment-dot payment-dot--cash"></span><span>Tunai</span><b id="paymentCash">52%</b></div><div><span class="payment-dot payment-dot--qris"></span><span>QRIS</span><b id="paymentQris">31%</b></div><div><span class="payment-dot payment-dot--transfer"></span><span>Transfer</span><b id="paymentTransfer">17%</b></div></div></article>
+            <article class="report-panel report-panel--customer"><header><div><h2>Pelanggan</h2><p>Komposisi transaksi</p></div></header><div class="customer-donut"><div><strong id="memberShare">62%</strong><span>Member</span></div></div><div class="customer-breakdown"><span><i class="customer-breakdown__member"></i>Member <b id="memberTransactions">30 transaksi</b></span><span><i class="customer-breakdown__regular"></i>Pelanggan umum <b id="regularTransactions">18 transaksi</b></span></div></article>
+          </section>
+          <section class="report-lower-grid"><article class="report-panel"><header><div><h2>Produk &amp; Layanan Terlaris</h2><p>Berdasarkan omzet penjualan</p></div><button class="report-link" type="button">Lihat katalog</button></header><div class="top-products" id="topProducts"></div></article><article class="report-panel"><header><div><h2>Diskon Terpakai</h2><p>Benefit yang diberikan ke pelanggan</p></div></header><div class="discount-report"><div><span class="discount-report__icon">M</span><div><strong>Diskon Member</strong><small id="memberDiscountUses">21 transaksi</small></div><b id="memberDiscountTotal">Rp 235.000</b></div><div><span class="discount-report__icon discount-report__icon--orange">50</span><div><strong>Diskon Pembelian 50+</strong><small id="bulkDiscountUses">8 transaksi</small></div><b id="bulkDiscountTotal">Rp 190.000</b></div></div></article></section>
+          <section class="report-panel report-panel--transactions"><header><div><h2>Transaksi Terbaru</h2><p>Penjualan terakhir pada periode ini</p></div><button class="report-link" type="button">Lihat semua</button></header><div class="report-table-wrap"><table class="report-table"><thead><tr><th>No. Transaksi</th><th>Pelanggan</th><th>Pesanan</th><th>Pembayaran</th><th>Total</th><th>Status</th></tr></thead><tbody id="recentTransactions"></tbody></table></div></section>
+        </div>
+      </main>
+    </div>
+    <div class="report-toast" id="reportToast" role="status"><span class="transaction-modal__icon transaction-modal__icon--success"><svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5"/></svg></span><span id="reportToastMessage">Laporan siap diunduh.</span></div>
+    <script src="script.js"></script>
+  </body>
+</html>
