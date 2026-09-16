@@ -631,3 +631,118 @@ if (customerTable) {
   ['#customerDetailModal', '#addCustomerModal', '#deleteMemberConfirmModal', '#deleteMemberSuccessModal'].forEach((selector) => document.querySelector(selector).addEventListener('click', (event) => { if (event.target.id === event.currentTarget.id) event.currentTarget.classList.remove('is-open'); }));
   renderCustomerCounts(); renderCustomers();
 }
+
+const catalogTable = document.querySelector('#catalogTable');
+
+if (catalogTable) {
+  const catalogItems = [
+    { id: 'PRD-001', name: 'Banner Flexi', description: 'Cetak banner untuk promosi dan acara.', category: 'Banner & Spanduk', type: 'product', price: 150000, unit: 'm²', active: true },
+    { id: 'PRD-002', name: 'Undangan Custom', description: 'Cetak undangan dengan pilihan bahan premium.', category: 'Undangan', type: 'product', price: 2500, unit: 'lembar', active: true },
+    { id: 'PRD-003', name: 'Stiker Vinyl', description: 'Stiker vinyl tahan air dengan cutting rapi.', category: 'Stiker', type: 'product', price: 8000, unit: 'lembar', active: true },
+    { id: 'PRD-004', name: 'Sablon Kaos', description: 'Sablon kaos custom untuk komunitas dan usaha.', category: 'Sablon', type: 'product', price: 35000, unit: 'pcs', active: true },
+    { id: 'PRD-005', name: 'Kartu Nama', description: 'Cetak kartu nama art carton 260 gsm.', category: 'Kartu Nama', type: 'product', price: 50000, unit: 'box', active: true },
+    { id: 'PRD-006', name: 'Fotokopi Warna', description: 'Cetak dokumen warna kualitas tajam.', category: 'Cetak Dokumen', type: 'product', price: 1500, unit: 'lembar', active: true },
+    { id: 'SRV-001', name: 'Jasa Desain', description: 'Pembuatan desain siap cetak.', category: 'Layanan Desain', type: 'service', price: 50000, unit: 'desain', active: true },
+    { id: 'SRV-002', name: 'Laminasi Doff', description: 'Finishing laminasi doff untuk hasil elegan.', category: 'Finishing', type: 'service', price: 5000, unit: 'lembar', active: false },
+  ];
+  let catalogFilter = 'all';
+  let catalogCategory = 'all';
+  let editingCatalogItem = null;
+  let catalogItemPendingDelete = null;
+  const currency = (value) => `Rp ${new Intl.NumberFormat('id-ID').format(value)}`;
+  const catalogTypeLabel = (type) => type === 'service' ? 'Layanan' : 'Produk';
+
+  function renderCatalogCounts() {
+    document.querySelector('#catalogAllCount').textContent = catalogItems.length;
+    document.querySelector('#catalogProductCount').textContent = catalogItems.filter((item) => item.type === 'product').length;
+    document.querySelector('#catalogServiceCount').textContent = catalogItems.filter((item) => item.type === 'service').length;
+    document.querySelector('#catalogActiveCount').textContent = catalogItems.filter((item) => item.active).length;
+  }
+
+  function renderCatalog() {
+    const term = document.querySelector('#catalogSearch').value.toLowerCase().trim();
+    const visibleItems = catalogItems.filter((item) => {
+      const matchesFilter = catalogFilter === 'all' || (catalogFilter === 'active' ? item.active : catalogFilter === 'inactive' ? !item.active : item.type === catalogFilter);
+      const matchesCategory = catalogCategory === 'all' || item.category === catalogCategory;
+      const matchesSearch = `${item.name} ${item.category} ${item.description}`.toLowerCase().includes(term);
+      return matchesFilter && matchesCategory && matchesSearch;
+    });
+    catalogTable.innerHTML = visibleItems.map((item) => `<tr><td><span class="catalog-name"><strong>${item.name}</strong><span>${item.description || 'Tanpa deskripsi'}</span></span></td><td>${item.category}</td><td><span class="catalog-type catalog-type--${item.type}">${catalogTypeLabel(item.type)}</span></td><td><strong>${currency(item.price)}</strong></td><td>${item.unit}</td><td><span class="catalog-status catalog-status--${item.active ? 'active' : 'inactive'}">${item.active ? 'Aktif' : 'Nonaktif'}</span></td><td><span class="catalog-actions"><button class="catalog-action" data-catalog-action="edit" data-catalog-id="${item.id}" type="button">Edit</button><button class="catalog-action catalog-action--delete" data-catalog-action="delete" data-catalog-id="${item.id}" type="button">Hapus</button></span></td></tr>`).join('');
+    document.querySelector('#emptyCatalog').hidden = visibleItems.length !== 0;
+  }
+
+  function setCatalogFilter(filter) {
+    catalogFilter = filter;
+    document.querySelectorAll('[data-catalog-filter]').forEach((button) => button.classList.toggle('is-active', button.dataset.catalogFilter === filter));
+    renderCatalog();
+  }
+
+  function openProductModal(item = null) {
+    editingCatalogItem = item;
+    const form = document.querySelector('#productForm');
+    form.reset();
+    document.querySelector('#productFormEyebrow').textContent = item ? 'EDIT KATALOG' : 'KATALOG BARU';
+    document.querySelector('#productModalTitle').textContent = item ? 'Edit Produk' : 'Tambah Produk';
+    document.querySelector('#saveProductButton').textContent = item ? 'Simpan Perubahan' : 'Simpan Produk';
+    if (item) {
+      document.querySelector('#productName').value = item.name;
+      document.querySelector('#productCategory').value = item.category;
+      document.querySelector('#productType').value = item.type;
+      document.querySelector('#productPrice').value = item.price;
+      document.querySelector('#productUnit').value = item.unit;
+      document.querySelector('#productDescription').value = item.description;
+      document.querySelector('#productActive').checked = item.active;
+    }
+    document.querySelector('#productModal').classList.add('is-open');
+  }
+
+  document.querySelectorAll('[data-catalog-filter]').forEach((button) => button.addEventListener('click', () => setCatalogFilter(button.dataset.catalogFilter)));
+  document.querySelector('#catalogCategories').addEventListener('click', (event) => {
+    const button = event.target.closest('[data-catalog-category]');
+    if (!button) return;
+    catalogCategory = button.dataset.catalogCategory;
+    document.querySelectorAll('[data-catalog-category]').forEach((item) => item.classList.toggle('is-active', item === button));
+    renderCatalog();
+  });
+  document.querySelector('#catalogSearch').addEventListener('input', renderCatalog);
+  catalogTable.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-catalog-id]');
+    if (!button) return;
+    const item = catalogItems.find((catalogItem) => catalogItem.id === button.dataset.catalogId);
+    if (!item) return;
+    if (button.dataset.catalogAction === 'delete') {
+      catalogItemPendingDelete = item;
+      document.querySelector('#deleteCatalogName').textContent = item.name;
+      document.querySelector('#deleteCatalogConfirmModal').classList.add('is-open');
+      return;
+    }
+    openProductModal(item);
+  });
+  document.querySelector('#addProduct').addEventListener('click', () => openProductModal());
+  document.querySelector('#closeProductModal').addEventListener('click', () => document.querySelector('#productModal').classList.remove('is-open'));
+  document.querySelector('#productModal').addEventListener('click', (event) => { if (event.target.id === 'productModal') event.currentTarget.classList.remove('is-open'); });
+  document.querySelector('#cancelDeleteCatalog').addEventListener('click', () => document.querySelector('#deleteCatalogConfirmModal').classList.remove('is-open'));
+  document.querySelector('#confirmDeleteCatalog').addEventListener('click', () => {
+    if (!catalogItemPendingDelete) return;
+    const deletedCatalogName = catalogItemPendingDelete.name;
+    catalogItems.splice(catalogItems.indexOf(catalogItemPendingDelete), 1);
+    catalogItemPendingDelete = null;
+    document.querySelector('#deletedCatalogSuccessName').textContent = deletedCatalogName;
+    document.querySelector('#deleteCatalogConfirmModal').classList.remove('is-open');
+    document.querySelector('#deleteCatalogSuccessModal').classList.add('is-open');
+    renderCatalogCounts(); renderCatalog();
+  });
+  document.querySelector('#closeDeleteCatalogSuccess').addEventListener('click', () => document.querySelector('#deleteCatalogSuccessModal').classList.remove('is-open'));
+  ['#deleteCatalogConfirmModal', '#deleteCatalogSuccessModal'].forEach((selector) => document.querySelector(selector).addEventListener('click', (event) => { if (event.target.id === event.currentTarget.id) event.currentTarget.classList.remove('is-open'); }));
+  document.querySelector('#productForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = { name: document.querySelector('#productName').value.trim(), category: document.querySelector('#productCategory').value, type: document.querySelector('#productType').value, price: Number(document.querySelector('#productPrice').value), unit: document.querySelector('#productUnit').value, description: document.querySelector('#productDescription').value.trim(), active: document.querySelector('#productActive').checked };
+    if (!formData.name || Number.isNaN(formData.price)) return;
+    if (editingCatalogItem) Object.assign(editingCatalogItem, formData);
+    else catalogItems.unshift({ id: `KAT-${String(Date.now()).slice(-4)}`, ...formData });
+    document.querySelector('#productModal').classList.remove('is-open');
+    renderCatalogCounts(); setCatalogFilter('all');
+    editingCatalogItem = null;
+  });
+  renderCatalogCounts(); renderCatalog();
+}

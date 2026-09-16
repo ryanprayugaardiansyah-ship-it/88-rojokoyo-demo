@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173e32" />
+    <title>Produk &amp; Layanan | 88 Rojokoyo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="dashboard-sidebar" id="sidebar">
+        <a class="brand" href="dashboard.html" aria-label="88 Rojokoyo"><span class="brand__mark">88</span><span class="brand__name">ROJOKOYO<small>PRINTING</small></span></a>
+        <nav class="sidebar-menu" aria-label="Navigasi utama">
+          <p class="sidebar-menu__label">MENU UTAMA</p>
+          <a href="dashboard.html"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1"/><rect x="14" y="14" width="6.5" height="6.5" rx="1"/></svg>Dashboard</a>
+          <a href="pos.html"><svg viewBox="0 0 24 24"><path d="M4 6h16l-1 14H5L4 6Z"/><path d="M2 6h20M9 10v6M15 10v6"/></svg>Kasir / POS</a>
+          <a href="pesanan.html"><svg viewBox="0 0 24 24"><path d="M6 3.5h12v17H6zM9 8h6M9 12h6M9 16h3"/></svg>Pesanan Produksi <span class="menu-badge">8</span></a>
+          <a href="pelanggan.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.8-3.5 3.2-5.5 7.5-5.5s6.7 2 7.5 5.5"/></svg>Pelanggan &amp; Member</a>
+          <p class="sidebar-menu__label sidebar-menu__label--spaced">PENGELOLAAN</p>
+          <a class="is-active" href="produk.html"><svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="m4 12 8 4 8-4M4 17l8 4 8-4"/></svg>Produk &amp; Layanan</a>
+          <a href="laporan.html"><svg viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16V6"/></svg>Laporan Penjualan</a>
+          <a href="pengaturan.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 13.4v-2.8l-2-.6a7.6 7.6 0 0 0-.7-1.6l1-1.8-2-2-1.8 1.1a7.6 7.6 0 0 0-1.6-.7L11.4 3H8.6L8 5a7.6 7.6 0 0 0-1.6.7L4.6 4.6l-2 2 1.1 1.8A7.6 7.6 0 0 0 3 10l-2 .6v2.8l2 .6c.2.6.4 1.1.7 1.6l-1.1 1.8 2 2 1.8-1.1c.5.3 1 .5 1.6.7l.6 2h2.8l.6-2c.6-.2 1.1-.4 1.6-.7l1.8 1.1 2-2-1.1-1.8c.3-.5.5-1 .7-1.6l2-.6Z"/></svg>Pengaturan</a>
+        </nav>
+        <div class="sidebar-bottom"><div class="sidebar-user"><span class="user-avatar">AR</span><span><strong>Admin Rojokoyo</strong><span>Administrator</span></span></div></div>
+      </aside>
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      <main class="dashboard-main">
+        <header class="dashboard-header"><button class="menu-button" id="sidebarToggle" type="button" aria-label="Buka menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="dashboard-header__right"><span class="header-date">Rabu, 16 September 2026</span><button class="notification-button" type="button" aria-label="Notifikasi"><svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><i></i></button><span class="header-avatar">AR</span></div></header>
+        <div class="dashboard-content catalog-content">
+          <section class="catalog-title"><div><h1>Produk &amp; Layanan</h1><p>Kelola katalog layanan cetak yang tersedia di Kasir / POS.</p></div><button class="new-order-button" id="addProduct" type="button"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Tambah Produk</button></section>
+          <section class="catalog-stats">
+            <button class="catalog-stat is-active" data-catalog-filter="all" type="button"><span class="catalog-stat__icon catalog-stat__icon--gray"><svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="m4 12 8 4 8-4M4 17l8 4 8-4"/></svg></span><strong id="catalogAllCount">8</strong><span>Total Katalog</span></button>
+            <button class="catalog-stat" data-catalog-filter="product" type="button"><span class="catalog-stat__icon catalog-stat__icon--orange"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM7 7V4h10v3M8 11h8M8 15h5"/></svg></span><strong id="catalogProductCount">6</strong><span>Produk Cetak</span></button>
+            <button class="catalog-stat" data-catalog-filter="service" type="button"><span class="catalog-stat__icon catalog-stat__icon--purple"><svg viewBox="0 0 24 24"><path d="M5 19 19 5M7 5h4v4M13 15h4v4"/></svg></span><strong id="catalogServiceCount">2</strong><span>Layanan Tambahan</span></button>
+            <button class="catalog-stat" data-catalog-filter="active" type="button"><span class="catalog-stat__icon catalog-stat__icon--green"><svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5"/></svg></span><strong id="catalogActiveCount">7</strong><span>Katalog Aktif</span></button>
+          </section>
+          <section class="catalog-panel">
+            <div class="catalog-tools"><label class="catalog-search"><svg viewBox="0 0 24 24"><circle cx="10.7" cy="10.7" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="catalogSearch" type="search" placeholder="Cari produk atau layanan..." /></label><div class="catalog-filter-tabs"><button class="is-active" data-catalog-filter="all" type="button">Semua</button><button data-catalog-filter="product" type="button">Produk</button><button data-catalog-filter="service" type="button">Layanan</button><button data-catalog-filter="inactive" type="button">Nonaktif</button></div></div>
+            <div class="catalog-category-row" id="catalogCategories"><button class="is-active" data-catalog-category="all" type="button">Semua Kategori</button><button data-catalog-category="Banner &amp; Spanduk" type="button">Banner &amp; Spanduk</button><button data-catalog-category="Undangan" type="button">Undangan</button><button data-catalog-category="Stiker" type="button">Stiker</button><button data-catalog-category="Sablon" type="button">Sablon</button><button data-catalog-category="Layanan Desain" type="button">Desain</button></div>
+            <div class="catalog-table-wrap"><table class="catalog-table"><thead><tr><th>Produk / Layanan</th><th>Kategori</th><th>Tipe</th><th>Harga Dasar</th><th>Satuan</th><th>Status</th><th></th></tr></thead><tbody id="catalogTable"></tbody></table></div>
+            <p class="empty-catalog" id="emptyCatalog" hidden>Tidak ada produk atau layanan yang sesuai.</p>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div class="customer-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle"><div class="customer-modal__dialog customer-modal__dialog--small"><header class="customer-modal__header"><div><p class="modal-eyebrow" id="productFormEyebrow">KATALOG BARU</p><h2 id="productModalTitle">Tambah Produk</h2></div><button class="modal-close" id="closeProductModal" type="button" aria-label="Tutup form">×</button></header><form class="product-form" id="productForm"><label>Nama produk / layanan<input id="productName" required placeholder="Contoh: Banner Flexi" /></label><div class="product-form-grid"><label>Kategori<select id="productCategory"><option>Banner &amp; Spanduk</option><option>Undangan</option><option>Stiker</option><option>Sablon</option><option>Kartu Nama</option><option>Cetak Dokumen</option><option>Layanan Desain</option><option>Finishing</option></select></label><label>Tipe<select id="productType"><option value="product">Produk</option><option value="service">Layanan</option></select></label></div><div class="product-form-grid"><label>Harga dasar<input id="productPrice" type="number" min="0" required placeholder="0" inputmode="numeric" /></label><label>Satuan<select id="productUnit"><option>pcs</option><option>lembar</option><option>m²</option><option>box</option><option>desain</option><option>paket</option></select></label></div><label>Deskripsi <small>(opsional)</small><textarea id="productDescription" rows="2" placeholder="Keterangan singkat produk atau layanan"></textarea></label><label class="product-status-toggle"><input id="productActive" type="checkbox" checked /><span></span>Produk aktif dan dapat dipilih di POS</label><button id="saveProductButton" type="submit">Simpan Produk</button></form></div></div>
+    <div class="transaction-modal" id="deleteCatalogConfirmModal" role="dialog" aria-modal="true" aria-labelledby="deleteCatalogConfirmTitle"><div class="transaction-modal__dialog"><span class="transaction-modal__icon transaction-modal__icon--danger"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg></span><h2 id="deleteCatalogConfirmTitle">Hapus katalog ini?</h2><p><strong id="deleteCatalogName">Produk</strong> akan dihapus dari daftar produk dan layanan.</p><div class="transaction-modal__actions"><button id="cancelDeleteCatalog" type="button">Batal</button><button class="transaction-modal__primary transaction-modal__primary--danger" id="confirmDeleteCatalog" type="button">Ya, Hapus</button></div></div></div>
+    <div class="transaction-modal" id="deleteCatalogSuccessModal" role="dialog" aria-modal="true" aria-labelledby="deleteCatalogSuccessTitle"><div class="transaction-modal__dialog"><span class="transaction-modal__icon transaction-modal__icon--success"><svg viewBox="0 0 24 24"><path d="m5 12 4.2 4.2L19 6.5"/></svg></span><h2 id="deleteCatalogSuccessTitle">Katalog berhasil dihapus</h2><p><strong id="deletedCatalogSuccessName">Produk</strong> telah dihapus dari daftar katalog.</p><div class="transaction-modal__actions transaction-modal__actions--single"><button class="transaction-modal__primary" id="closeDeleteCatalogSuccess" type="button">Selesai</button></div></div></div>
+    <script src="script.js"></script>
+  </body>
+</html>
