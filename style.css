@@ -1941,6 +1941,23 @@ a {
   text-align: center;
 }
 
+.receipt-customer-info {
+  padding: 9px 0;
+  border-top: 1px dashed #d9e2dc;
+  border-bottom: 1px dashed #d9e2dc;
+}
+
+.receipt-section-heading {
+  margin-bottom: 7px;
+  color: #89958e;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+
+.receipt-customer-info .receipt-line { margin: 5px 0; }
+
 .receipt-order {
   padding: 9px 0;
   border-top: 1px dashed #d9e2dc;
@@ -2006,6 +2023,24 @@ a {
   font-size: 16px;
 }
 
+.receipt-cash-summary {
+  margin-top: 11px;
+  padding-top: 7px;
+  border-top: 1px dashed #d9e2dc;
+}
+
+.receipt-cash-summary .receipt-line { margin: 5px 0; }
+
+.receipt-footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px dashed #d9e2dc;
+  color: #7e8c84;
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: center;
+}
+
 .receipt-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2029,6 +2064,10 @@ a {
   color: white;
   background: var(--orange);
 }
+
+.receipt-actions { grid-template-columns: 1fr 1fr 1.25fr; }
+.process-transaction-button { border-color: #28775a !important; background: #28775a !important; }
+.transaction-modal { position: fixed; z-index: 70; inset: 0; display: grid; padding: 20px; place-items: center; opacity: 0; pointer-events: none; background: rgba(18,42,33,.55); transition: opacity .2s; }.transaction-modal.is-open { opacity: 1; pointer-events: auto; }.transaction-modal__dialog { width: min(100%, 335px); padding: 25px 22px 21px; border-radius: 14px; background: white; box-shadow: 0 20px 45px rgba(12,32,24,.25); text-align: center; transform: translateY(10px) scale(.98); transition: .2s; }.transaction-modal.is-open .transaction-modal__dialog { transform: translateY(0) scale(1); }.transaction-modal__icon { display: grid; width: 42px; height: 42px; margin: 0 auto 13px; place-items: center; border-radius: 50%; font-family: "Plus Jakarta Sans", sans-serif; font-size: 21px; font-weight: 800; }.transaction-modal__icon--question { color: #a36b16; background: #fff1d2; }.transaction-modal__icon--success { color: #28775a; background: #dff3e7; }.transaction-modal__icon svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5; }.transaction-modal h2 { margin: 0; color: #2e4338; font-family: "Plus Jakarta Sans", sans-serif; font-size: 17px; letter-spacing: -.4px; }.transaction-modal p { margin: 9px 0 0; color: #738078; font-size: 11px; line-height: 1.55; }.transaction-modal__actions { display: grid; grid-template-columns: 1fr 1.2fr; gap: 8px; margin-top: 20px; }.transaction-modal__actions button { height: 38px; border: 1px solid #dce6e0; border-radius: 8px; color: #617168; background: white; font-size: 10px; font-weight: 700; cursor: pointer; }.transaction-modal__actions .transaction-modal__primary { border-color: #28775a; color: white; background: #28775a; }.transaction-modal__actions--single { grid-template-columns: 1fr; }
 
 @media (min-width: 600px) {
   .product-grid {

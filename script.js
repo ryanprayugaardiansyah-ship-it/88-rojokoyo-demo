@@ -160,7 +160,7 @@ if (posElements.items) {
       : 'Diskon pembelian jumlah 50+ item aktif sebesar 5%.';
     document.querySelector('#checkoutButton').disabled = !cart.length;
     updateCashPayment(total);
-    return { totalItems, discount, total };
+    return { totalItems, subtotal, discount, total };
   }
 
   function updateCashPayment(total) {
@@ -284,6 +284,7 @@ if (posElements.items) {
     document.querySelector('#receiptCustomerNote').textContent = note;
     document.querySelector('#receiptItems').textContent = `${summary.totalItems} item`;
     document.querySelector('#receiptPayment').textContent = paymentMethod;
+    document.querySelector('#receiptSubtotal').textContent = formatCurrency(summary.subtotal);
     document.querySelector('#receiptDiscount').textContent = `- ${formatCurrency(summary.discount)}`;
     document.querySelector('#receiptTotal').textContent = formatCurrency(summary.total);
     const isCashPayment = paymentMethod === 'Tunai';
@@ -291,6 +292,7 @@ if (posElements.items) {
     const difference = paid - summary.total;
     document.querySelector('#receiptCashPaidRow').hidden = !isCashPayment;
     document.querySelector('#receiptChangeRow').hidden = !isCashPayment;
+    document.querySelector('#receiptCashSummary').hidden = !isCashPayment;
     if (isCashPayment) {
       document.querySelector('#receiptCashPaid').textContent = formatCurrency(paid);
       document.querySelector('#receiptChangeRow span').textContent = difference < 0 ? 'Kekurangan pembayaran' : 'Kembalian';
@@ -301,6 +303,14 @@ if (posElements.items) {
 
   document.querySelector('#closeReceipt')?.addEventListener('click', () => document.querySelector('#receiptModal').classList.remove('is-open'));
   document.querySelector('#printReceipt')?.addEventListener('click', () => window.print());
+  document.querySelector('#processTransaction')?.addEventListener('click', () => document.querySelector('#processConfirmModal').classList.add('is-open'));
+  document.querySelector('#cancelProcess')?.addEventListener('click', () => document.querySelector('#processConfirmModal').classList.remove('is-open'));
+  document.querySelector('#confirmProcess')?.addEventListener('click', () => {
+    document.querySelector('#processConfirmModal').classList.remove('is-open');
+    document.querySelector('#receiptModal').classList.remove('is-open');
+    document.querySelector('#processSuccessModal').classList.add('is-open');
+  });
+  document.querySelector('#closeProcessSuccess')?.addEventListener('click', () => document.querySelector('#processSuccessModal').classList.remove('is-open'));
   renderCart();
 }
 
